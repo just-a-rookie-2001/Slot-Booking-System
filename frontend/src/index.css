@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.logo {
+    height: 32px;
+    background-color: white;
+    text-align: center;
+    margin: 24px;
+}
+  
+.site-layout .site-layout-background {
+    background: #fff;
+}
+
+.site-layout-content {
+    background: #fff;
+    padding: 24px;
+    min-height: 280px;
+}
+
+#components-form-demo-normal-login .login-form {
+    max-width: 300px;
+}
+
+#components-form-demo-normal-login .login-form-forgot {
+    float: right;
+}
+
+#components-form-demo-normal-login .ant-col-rtl .login-form-forgot {
+    float: left;
+}
+
+#components-form-demo-normal-login .login-form-button {
+    width: 100%;
+}
+
+.partiallyBookedBtn{
+    background-color: gold;
+    border-color: gold;
+    color: white;
+}
+.partiallyBookedBtn:hover,.partiallyBookedBtn:active, .partiallyBookedBtn:focus{
+    background-color: white;
+    border-color: gold;
+    color: gold;
+}
+.bookPrimaryBtn:hover{
+    border-color: #1890ff;
+    color: #1890ff;
+    background-color: white;
+}
+.site-page-header {
+    border: 1px solid rgb(235, 237, 240);
+}
+
+.sidenav{
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+
+.responsiveCard{
+    width: 300px;
+}
+
+@media only screen and (max-width: 375px) {
+    .responsiveCard {
+      width: 200px;
+    }
+  }

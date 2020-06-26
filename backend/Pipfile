@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+pylint = "*"
+pylint-django = "*"
+
+[packages]
+djangorestframework = "*"
+django = "*"
+django-cors-headers = "*"
+psycopg2 = "*"
+apscheduler = "*"
+django-apscheduler = "*"
+
+[requires]
+python_version = "3.8"
