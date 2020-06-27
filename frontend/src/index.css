@@ -74,9 +74,23 @@ code {
 .responsiveCard{
     width: 300px;
 }
+.graph1{
+    width: 35%;
+}
+.graph2{
+    width: 65%;
+}
 
 @media only screen and (max-width: 375px) {
     .responsiveCard {
       width: 200px;
     }
-  }
+}
+@media only screen and (max-width: 768px) {
+    .graph1{
+        width: 100%;
+    }
+    .graph2{
+        width: 100%;
+    }
+}

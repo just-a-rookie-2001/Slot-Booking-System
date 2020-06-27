@@ -1,13 +1,71 @@
 import React from 'react';
 import axios from "axios";
-import { Card, Button, Row, Col, Empty, Modal, Input } from "antd";
+import moment from 'moment';
+import { Card, Button, Row, Col, Empty, Modal, Input, Table } from "antd";
 import { fromDecimal } from "../utility"
 
 class AdminBooking extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { response: [], modalVisible: false, feedback: null, accept: null, id: null, }
+        this.state = { response: [], modalVisible: false, feedback: null, accept: null, id: null, mainSlot: null }
         this.fetchData = this.fetchData.bind(this);
+    }
+
+    columns = [
+        {
+            title: 'Booking Date',
+            dataIndex: 'booking_date',
+            width: 150,
+            fixed: "left",
+            sorter: (a, b) => moment(a["booking_date"]) - moment(b["booking_date"]),
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Requested By',
+            dataIndex: 'user',
+            sorter: (a, b) => a["user"].length - b["user"].length,
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Room #',
+            dataIndex: 'room_number',
+            sorter: (a, b) => a["room_number"] - b["room_number"],
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Room Name',
+            dataIndex: 'room_name',
+            sorter: (a, b) => a["room_name"].length - b["room_name"].length,
+            sortDirections: ['descend', 'ascend'],
+        },
+        {
+            title: 'Purpose of Booking',
+            dataIndex: 'purpose_of_booking',
+            sorter: (a, b) => a["purpose_of_booking"].length - b["purpose_of_booking"].length,
+            sortDirections: ['descend', 'ascend'],
+        },
+    ];
+
+
+    clashSlots = () => {
+        var clash = []
+        const { mainSlot, response } = this.state
+        if (this.state.accept !== false && mainSlot !== null && response !== null) {
+            response.map((values, index) => {
+                if (values["room_id"] === mainSlot["room_id"] &&
+                    values["start_timing"] === mainSlot["start_timing"] &&
+                    values["booking_date"] === mainSlot["booking_date"] &&
+                    values["id"] !== mainSlot["id"]) {
+                    clash.push(values)
+                }
+            })
+        }
+        return clash.length >= 1 ?
+            <>
+                <p>The following requests will be automatically declined as they clash with current request</p>
+                <Table pagination={false} style={{ marginBottom: 20 }}
+                    dataSource={clash} columns={clash && this.columns} scroll={{ x: 600, y: 300 }} />
+            </> : null
     }
 
     componentDidMount() {
@@ -31,7 +89,7 @@ class AdminBooking extends React.Component {
             "id": this.state.id,
             "admin_did_accept": this.state.accept,
             "admin_feedback": message
-        }).then(_res => { this.fetchData(); this.setState({modalVisible: false}) })
+        }).then(_res => { this.fetchData(); this.setState({ modalVisible: false }) })
     }
 
     render() {
@@ -54,8 +112,9 @@ class AdminBooking extends React.Component {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         this.setState({
-                                            modalVisible: true,
                                             id: value["id"],
+                                            mainSlot: value,
+                                            modalVisible: true,
                                             accept: true
                                         })
                                     }}>Accept</Button>
@@ -63,8 +122,9 @@ class AdminBooking extends React.Component {
                                     onClick={(e) => {
                                         e.preventDefault();
                                         this.setState({
-                                            modalVisible: true,
                                             id: value["id"],
+                                            mainSlot: value,
+                                            modalVisible: true,
                                             accept: false
                                         })
                                     }}>Decline</Button>
@@ -80,6 +140,7 @@ class AdminBooking extends React.Component {
                     onOk={(e) => { this.handleButtonClick(e) }}
                     onCancel={() => { this.setState({ modalVisible: false }) }}
                 >
+                    {this.clashSlots()}
                     <Input.TextArea
                         placeholder="Enter your reason for taking this action"
                         autoSize={{ minRows: 4, maxRows: 8 }}

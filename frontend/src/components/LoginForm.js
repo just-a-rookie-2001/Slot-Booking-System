@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Button, Checkbox} from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import UserContext from '../context/usercontext';
 import { Link } from "react-router-dom";
@@ -22,20 +22,22 @@ class LoginForm extends React.Component {
             >
                 <Form.Item
                     name="email"
-                    rules={[{
-                        type: 'email',
-                        message: 'Please enter a valid email address',
-                    },
-                    {
-                        required: true,
-                        message: 'Please input your Email'
-                    },
-                    {
-                        type: 'pattern',
-                        pattern: new RegExp("[a-z0-9._%+-]+@ahduni\.edu\.in"),
-                        message: "Please enter an Ahmedabad University Mail"
-                    }]}
-                    >
+                    rules={[
+                        {
+                            type: 'email',
+                            message: 'Please enter a valid email address',
+                        },
+                        {
+                            required: true,
+                            message: 'Please input your Email'
+                        },
+                        // {
+                        //     type: 'pattern',
+                        //     pattern: new RegExp("[a-z0-9._%+-]+@ahduni\.edu\.in"),
+                        //     message: "Please enter an Ahmedabad University Mail"
+                        // }
+                    ]}
+                >
                     <Input
                         prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-Mail"
                         type='email'

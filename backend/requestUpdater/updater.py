@@ -50,7 +50,7 @@ scheduler.add_jobstore(DjangoJobStore(), "default")
 def update_requests():
     try:
         for room in Room.objects.all():
-            date = datetime.date.today()
+            date = datetime.date.today() + datetime.timedelta(days=1)
             booking = Booking.objects.filter(booking_date=date, is_pending=True, Room=room.id)
             # Handle empty slots
             if not booking.exists():

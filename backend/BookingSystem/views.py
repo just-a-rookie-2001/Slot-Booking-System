@@ -172,8 +172,8 @@ class BookRoomSlotView(APIView):
             if (data["startTime"] not in range(1, 25, 3)) or (data["endTime"] not in range(3, 25, 3)):
                 return Response({"message": "This slot does not exist. Booking not possible"})
 
-            if Booking.objects.filter(booking_date__exact=data["date"], start_timing__exact=data["startTime"], end_timing__exact=data["endTime"], user__email__exact=data["email"]).count() >= 1:
-                return Response("You have already booked this timing. You cannot book 2 slots at the same time", status.HTTP_409_CONFLICT)
+            # if Booking.objects.filter(booking_date__exact=data["date"], start_timing__exact=data["startTime"], end_timing__exact=data["endTime"], user__email__exact=data["email"]).exclude(admin_did_accept=False, is_pending=False).count() >= 1:
+            #     return Response("You have already booked this timing. You cannot book 2 slots at the same time", status.HTTP_409_CONFLICT)
             
             for item in Booking.objects.filter(booking_date__exact=data["date"], Room__exact=data["roomID"]):
                 if (data["endTime"] < item.start_timing or data["startTime"] > item.end_timing):
@@ -214,6 +214,7 @@ class AdminRequestActionView(APIView):
                  "is_pending": item.is_pending,
                  "purpose_of_booking": item.purpose_of_booking,
                  "user": get_user_model().objects.get(email=item.user).email,
+                 "room_id": room.id,
                  "room_name": room.room_name,
                  "room_number": room.room_number}
             response.append(x)

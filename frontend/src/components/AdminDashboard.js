@@ -59,7 +59,7 @@ class AdminDashboard extends Component {
         }
 
         this.graphData2 = {
-            labels: Object.keys(data[2]).map((value, _index) => fromDecimal(parseInt(value)) + "-" + fromDecimal(parseInt(value), 1)),
+            labels: Object.keys(data[2]).map((value, _index) => fromDecimal(parseInt(value)) + "-" + fromDecimal(parseInt(value), 3)),
             datasets: [{
                 label: "Number of Bookings",
                 data: Object.values(data[2]),
@@ -69,6 +69,7 @@ class AdminDashboard extends Component {
             }]
         }
         this.g2Options = {
+            responsive: true,
             maintainAspectRatio: false,
             scales: {
                 yAxes: [{
@@ -116,17 +117,17 @@ class AdminDashboard extends Component {
                         </>
                     }
                 </Row>
-                <Row style={{ justifyContent: 'space-around' }}>
+                <Row style={{ justifyContent: 'space-around' }} gutter={4}>
                     {this.state.graph1 &&
                         <>
-                            <Col span={{ sm: 24, md: 8 }} >
-                                <Card title='Bookings per Building' style={{ width: 400 }} hoverable>
+                            <Col className="graph1">
+                                <Card title='Bookings per Building' bordered={false}>
                                     <Bar data={this.state.graph1} height={500}
                                         options={this.g1Options} />
                                 </Card>
                             </Col>
-                            <Col span={{ sm: 24, md: 16 }} >
-                                <Card title='Bookings per Slot' style={{ width: 600 }} hoverable>
+                            <Col className="graph2">
+                                <Card title='Bookings per Slot' bordered={false}>
                                     <Bar data={this.state.graph2} height={500}
                                         options={this.g2Options} />
                                 </Card>

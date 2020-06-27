@@ -168,7 +168,7 @@ class RoomList extends React.Component {
                             >
                                 <Meta
                                     avatar={<Avatar src="logo.png" />}
-                                    title={item.room_name}
+                                    title={item.room_number + " - " + item.room_name}
                                     description={item.description}
                                 />
                             </Card>
