@@ -138,7 +138,7 @@ class BookingHistory extends React.Component {
                         onOk={(e) => this.setState({ modalVisible: false })}
                         onCancel={(e) => this.setState({ modalVisible: false })}
                     >
-                        <Table dataSource={result} columns={result && this.columns} scroll={{ x: 1500, y: 400 }} />
+                        <Table dataSource={result} columns={result && this.columns} scroll={{ x: 1500 }} />
                     </Modal>
                 </>
             )
