@@ -5,12 +5,12 @@ import UserContext from './usercontext'
 class GlobalState extends React.Component {
 
     state = {
-        token: localStorage.getItem('token') || null,
+        token: localStorage.getItem('token'),
         error: null,
         loading: false,
-        email: localStorage.getItem('email') || null,
-        isAuthenticated: Boolean(localStorage.getItem('token')) || false,
-        isAdmin: Boolean(localStorage.getItem('admin')),
+        email: localStorage.getItem('email'),
+        isAuthenticated: Boolean(localStorage.getItem('token')),
+        isAdmin: (localStorage.getItem('admin') === 'true'),
         login: this.login.bind(this),
         logout: this.logout.bind(this),
         register: this.register.bind(this),
@@ -23,11 +23,8 @@ class GlobalState extends React.Component {
             "password": password,
             "workplace": workplace,
             "user_type": ac_type
-        }).then(_res => {
-            this.setState({ error: null }, () => this.login(email, password))
-        }).catch(err => {
-            this.setState({ error: "Some error occured" })
-        })
+        }).then(_res => { this.setState({ error: null }, () => this.login(email, password)) })
+            .catch(err => { this.setState({ error: "Some error occured" }) })
 
     }
 
@@ -35,34 +32,24 @@ class GlobalState extends React.Component {
         axios.post('http://localhost:8000/api-token-auth/', {
             username: username,
             password: password
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    const token = response.data.token;
-                    const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-                    localStorage.setItem("email", username);
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('expirationDate', expirationDate);
-                    axios.get(`http://localhost:8000/api/filter/adminfilter/checkadmin/${username}`).then(res => {
-                        if (res.data["admin"]) {
-                            localStorage.setItem('admin', res.data["admin"])
-                        }
-                        this.setState({
-                            token: token,
-                            isAuthenticated: true,
-                            error: null,
-                            email: username,
-                            isAdmin: res.data["admin"],
-                        })
-                    })
-
-                } else {
-                    this.setState({ error: "Something went wrong" });
-                }
-            })
-            .catch(_err => {
-                this.setState({ error: "Please check your email or password" });
-            })
+        }).then(response => {
+            if (response.status === 200) {
+                const admin = response.data.admin
+                const token = response.data.token;
+                const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+                localStorage.setItem("email", username);
+                localStorage.setItem('token', token);
+                localStorage.setItem('expirationDate', expirationDate);
+                localStorage.setItem('admin', admin)
+                this.setState({
+                    token: token,
+                    isAuthenticated: true,
+                    error: null,
+                    email: username,
+                    isAdmin: admin,
+                })
+            } else { this.setState({ error: "Something went wrong" }) }
+        }).catch(_err => { this.setState({ error: "Please check your email or password" }) })
     }
 
     logout() {

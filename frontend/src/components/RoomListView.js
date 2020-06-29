@@ -3,10 +3,13 @@ import axios from 'axios';
 import moment from "moment";
 import { Card, Avatar, Row, Col, DatePicker, Badge, Divider, Select } from 'antd';
 import { Link } from "react-router-dom";
+import UserContext from "../context/usercontext"
 
 const { Meta } = Card;
 
 class RoomList extends React.Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props)
         this.state = {
@@ -19,7 +22,8 @@ class RoomList extends React.Component {
     }
 
     fetchData = () => {
-        axios.get('http://127.0.0.1:8000/api/filter/roomlist/')
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+        axios.get('http://127.0.0.1:8000/api/filter/roomlist/', config)
             .then(res => {
                 res.data.sort((a, b) => {
                     a = a.school.toLowerCase();
@@ -30,32 +34,19 @@ class RoomList extends React.Component {
             })
     }
 
-    onTimeChange = (values) => {
-        console.log(values)
-        const start = moment(values[0]).format("HH:mm")
-        const end = moment(values[1]).format("HH:mm")
-        this.setState({ start: start, end: end })
-        axios.post("http://127.0.0.1:8000/api/filter/roomlist/", {
-            "date": this.state.date,
-            "start": start,
-            "end": end
-        }).then(res => this.setState({ filterData: res.data }, () => { console.log(this.state.filterData) }))
-    }
-
     onSlotChange = (values) => {
-        console.log(values)
         const start = values.split("-")[0]
         const end = values.split("-")[1]
         this.setState({ start: start, end: end })
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
         axios.post("http://127.0.0.1:8000/api/filter/roomlist/", {
             "date": this.state.date,
             "start": start,
             "end": end
-        }).then(res => this.setState({ filterData: res.data }, () => { console.log(this.state.filterData) }))
+        }, config).then(res => this.setState({ filterData: res.data }, () => { console.log(this.state.filterData) }))
     }
 
     renderRooms = () => {
-        console.log("Both data", this.state.roomData, this.state.filterData)
         const roomData = this.state.roomData
         const filteredData = this.state.filterData
         return roomData.map((item, key) => {
@@ -110,7 +101,6 @@ class RoomList extends React.Component {
                         </>
                     )
                 } else if (this.state.start && this.state.end) {
-                    console.log("inside has value else");
                     return (
                         <>
                             {divider}
@@ -212,22 +202,9 @@ class RoomList extends React.Component {
                             size="large"
                             showToday={false}
                             disabledDate={current => { return current < moment() }}
-                        // style={{ marginRight: "10px" }}
                         />
                     </Col>
                     <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }}>
-                        {/* <TimePicker.RangePicker
-                            format={'HH:mm'}
-                            minuteStep={30}
-                            size="large"
-                            onChange={(values) => {
-                                if (values !== null) {
-                                    this.onTimeChange(values);
-                                } else { this.setState({ filterData: null, start: null, end: null }); }
-                            }}
-                            showTime={{ hideDisabledOptions: true }}
-                            disabledHours={() => { return [0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23, 24] }}
-                        /> */}
                         <Select style={{ width: 180 }}
                             size="large"
                             onChange={(values) => {

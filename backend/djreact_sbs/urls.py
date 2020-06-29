@@ -28,7 +28,7 @@ router.register('api/bookings', BookingsView)
 router.register('api/users', UserView)
 
 urlpatterns = [
-    path('api-token-auth/', obtain_auth_token),  #login (post)
+    path('api-token-auth/', CustomAuthToken.as_view()),  #login (post)
     path("api/user/register", UserRegisterView.as_view()), #register (post)
     path("api/user/forgotpassword", ForgotPasswordView.as_view()), #generate token (post)
     path("api/user/verifytoken", VerifyResetToken.as_view()),  #verify token (post)
@@ -41,7 +41,7 @@ urlpatterns = [
     path("api/filter/userfilter/past/<email>", UserPastBookingsView.as_view()),
     path("api/filter/userfilter/future/<email>", UserFutureBookingsView.as_view()),
     path("api/filter/roomlist/", RoomListView.as_view()),
-    path("api/filter/roomfilter/", BookingFilterView.as_view()),
+    path("api/filter/roomfilter/", RoomDetailView.as_view()),
     path("api/allbookings", BookingHistory.as_view()),
     path("api/book/", BookRoomSlotView.as_view()),
     path("api/admindashboard", AdminDashboardStats.as_view()),

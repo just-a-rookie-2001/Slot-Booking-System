@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'yoursecretkey'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,12 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Libraries/Frameworks
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-
     'django_apscheduler.apps.DjangoApschedulerConfig',
 
+    # Apps
     'accounts',
     'BookingSystem.apps.BookingsystemConfig',
 ]
@@ -65,8 +66,8 @@ ROOT_URLCONF = 'djreact_sbs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -91,11 +92,11 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'yourdatabasename',
-        'USER': 'postgres',
-        'PASSWORD': 'yourdatabasepassword',
+        'NAME': os.environ.get('NAME'),
+        'USER': "postgres",
+        'PASSWORD': os.environ.get('PASSWORD'),
         'HOST': '127.0.0.1',
-        'PORT':'5432',
+        'PORT': 5432,
     }
 }
 
@@ -137,19 +138,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Custom Settings
 
 # custom user model
 AUTH_USER_MODEL = 'accounts.User'
 
+# SMTP server config
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'youremail@gmail.com'
-EMAIL_HOST_PASSWORD = 'yourpassword'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
+# Whitelist React (NodeJS server)
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
 ]

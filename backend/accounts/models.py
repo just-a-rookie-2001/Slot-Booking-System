@@ -29,7 +29,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     types_of_user = [
-        ("S", "Student"),
         ("F", "Faculty"),
         ("C", "Club"),
         ("N", "Not Assigned"),
