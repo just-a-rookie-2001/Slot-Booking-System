@@ -2,10 +2,13 @@ import { Col, Row, Card, } from "antd";
 import axios from "axios";
 import { fromDecimal } from "../utility"
 import React, { Component } from 'react';
+import UserContext from "../context/usercontext";
 import { Bar } from "react-chartjs-2";
 
 
 class AdminDashboard extends Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props);
         this.state = { user: null, bookings: null, rooms: null, datavalue: null, datavalue2: null, inidata: null }
@@ -23,7 +26,8 @@ class AdminDashboard extends Component {
         this.fetchData()
     }
     fetchData = () => {
-        axios.get("http://localhost:8000/api/admindashboard").then(res => this.filterData(res.data))
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+        axios.get("http://localhost:8000/api/admindashboard", config).then(res => this.filterData(res.data))
     }
     randomColor = () => {
         const r = Math.round(Math.random() * 255);

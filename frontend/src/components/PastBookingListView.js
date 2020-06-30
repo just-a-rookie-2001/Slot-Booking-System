@@ -9,6 +9,7 @@ import { fromDecimal } from "../utility"
 
 class UserPastBookings extends React.Component {
     static contextType = UserContext
+    
     state = {
         history: null
     }
@@ -66,7 +67,8 @@ class UserPastBookings extends React.Component {
     ];
 
     componentDidMount() {
-        axios.get(`http://localhost:8000/api/filter/userfilter/past/${this.context.email}`)
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+        axios.get(`http://localhost:8000/api/filter/userfilter/past`, config)
             .then(res => {
                 for (var i in res.data) {
                     if (res.data[i]["admin_did_accept"]) {

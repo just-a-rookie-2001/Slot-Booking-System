@@ -45,18 +45,14 @@ class RegisterForm extends React.Component {
                     label="E-Mail"
                     rules={[
                         {
-                            type: 'email',
-                            message: 'Please enter a valid email address',
+                            type: 'pattern',
+                            pattern: new RegExp("[a-z0-9._%+-]+@ahduni.edu.in"),
+                            message: "Please enter an Ahmedabad University Mail"
                         },
                         {
                             required: true,
                             message: 'Please input your Email'
                         },
-                        // {
-                        //     type: 'pattern',
-                        //     pattern: new RegExp("[a-z0-9._%+-]+@ahduni\.edu\.in"),
-                        //     message: "Please enter an Ahmedabad University Mail"
-                        // }
                     ]}
                 >
                     <Input placeholder="E-Mail" type='email' />

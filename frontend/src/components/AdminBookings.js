@@ -3,8 +3,11 @@ import axios from "axios";
 import moment from 'moment';
 import { Card, Button, Row, Col, Empty, Modal, Input, Table } from "antd";
 import { fromDecimal } from "../utility"
+import UserContext from "../context/usercontext"
 
 class AdminBooking extends React.Component {
+    static contextType = UserContext;
+
     constructor(props) {
         super(props);
         this.state = { response: [], modalVisible: false, feedback: null, accept: null, id: null, mainSlot: null }
@@ -73,10 +76,9 @@ class AdminBooking extends React.Component {
     }
 
     fetchData() {
-        axios.get("http://127.0.0.1:8000/api/filter/adminfilter/pending")
-            .then(res => {
-                this.setState({ response: res.data }, () => { console.log(this.state.response) })
-            })
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+        axios.get("http://127.0.0.1:8000/api/filter/adminfilter/pending", config)
+            .then(res => { this.setState({ response: res.data }, () => { console.log(this.state.response) }) })
     }
 
     handleButtonClick(event) {
@@ -85,11 +87,12 @@ class AdminBooking extends React.Component {
         if (message === "" || message === null || message === false) {
             message = "Admin has not given any feedback"
         }
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
         axios.post(`http://127.0.0.1:8000/api/filter/adminfilter/pending`, {
             "id": this.state.id,
             "admin_did_accept": this.state.accept,
             "admin_feedback": message
-        }).then(_res => { this.fetchData(); this.setState({ modalVisible: false }) })
+        }, config).then(_res => { this.fetchData(); this.setState({ modalVisible: false }) })
     }
 
     render() {

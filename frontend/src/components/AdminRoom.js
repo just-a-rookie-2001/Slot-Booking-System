@@ -2,10 +2,13 @@ import React from "react";
 import axios from 'axios';
 import { Card, Avatar, Row, Col, Form, Input, Button, Select, InputNumber, PageHeader, Popconfirm } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+import UserContext from "../context/usercontext";
 
 const { Meta } = Card;
 
 class AdminRoom extends React.Component {
+    static contextType = UserContext
+
     constructor(props) {
         super(props)
         this.state = { rooms: [], formVisible: false }
@@ -16,23 +19,18 @@ class AdminRoom extends React.Component {
     }
 
     fetchData = () => {
-        axios.defaults.headers = {
-            "Content-Type": "application/json",
-            // Authorization: `Token  ${newprops.token}`
-        }
-        axios.get('http://localhost:8000/api/rooms/')
-            .then(res => {
-                this.setState({ rooms: res.data });
-            })
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+        axios.get('http://localhost:8000/api/rooms/', config).then(res => { this.setState({ rooms: res.data }) })
     }
 
     onFinish = (values) => {
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
         axios.post("http://localhost:8000/api/rooms/", {
             "room_number": values["Room Number"],
             "room_name": values["Room Name"],
             "description": values["Room Description"],
             "school": values["School"],
-        }).then(_res => this.fetchData())
+        }, config).then(_res => this.fetchData())
         this.setState({ formVisible: false })
     }
 
@@ -115,7 +113,7 @@ class AdminRoom extends React.Component {
                         >
                             <Meta
                                 avatar={<Avatar src="/logo.png" />}
-                                title={item.room_name}
+                                title={item.room_number + " - " + item.room_name}
                                 description={item.description}
                             />
                         </Card>
@@ -124,7 +122,7 @@ class AdminRoom extends React.Component {
                 {<Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }}>
                     <Card
                         style={{ width: 300 }}
-                        cover={<img alt="example" src="/logo.png" style={{width:275, height:250}}/>}
+                        cover={<img alt="example" src="/logo.png" style={{ width: 275, height: 250 }} />}
                         hoverable
                         onClick={(e) => this.setState({ formVisible: true })}
                     >

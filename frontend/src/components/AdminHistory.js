@@ -92,7 +92,8 @@ class BookingHistory extends React.Component {
     };
 
     componentDidMount() {
-        axios.get(`http://localhost:8000/api/allbookings`)
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+        axios.get(`http://localhost:8000/api/allbookings`, config)
             .then(res => {
                 for (var i in res.data) {
                     if (res.data[i]["admin_did_accept"]) {

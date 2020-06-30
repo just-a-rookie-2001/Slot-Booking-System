@@ -6,34 +6,29 @@ import { Avatar, Row, Descriptions } from 'antd';
 
 class UserAccount extends React.Component {
     static contextType = UserContext
+    
     constructor(props) {
         super(props)
         this.state = { user: [] }
     }
     componentDidMount() {
-        axios.defaults.headers = {
-            "Content-Type": "application/json",
-            // Authorization: `Token  ${newprops.token}`
-        }
-        axios.get(`http://localhost:8000/api/user/accountinfo/${this.context.email}`)
-        .then(res => {
-            this.setState({ user: res.data }, () => console.log(this.state.user));
-        })
+        const config = { headers: { Authorization: `Token  ${this.context.token}` } }
+        axios.get(`http://localhost:8000/api/user/accountinfo`, config)
+            .then(res => {
+                this.setState({ user: res.data }, () => console.log(this.state.user));
+            })
     }
-    
+
     render() {
         var uType = "Unknown"
         const type = this.state.user.type
         var avatar = "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
 
-        if (type === "S") {
-            uType = "Student";
-            avatar = "student.svg"
-        } else if (type === "F") {
+        if (type === "F") {
             uType = "Faculty";
             avatar = "faculty.svg"
         } else if (type === "C") {
-            uType="Club"
+            uType = "Club"
             avatar = "club.svg"
         }
 

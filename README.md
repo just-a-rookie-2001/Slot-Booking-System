@@ -1,8 +1,8 @@
 # Slot Booking System
+![Slots](/screenshots/slots.jpeg)
 A simple Django React app to manage slot booking more effectively
 
 ## Table of Contents
-
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
@@ -29,35 +29,27 @@ Navigate into the repository
 cd Slot-Booking-System
 ```
 
-#### 1. Database Configuration
+#### 1. Database and SMTP server Configuration
 - Configure a postgres database before running the backend
-- Navigate to `./backend/djreact_sbs/`
-- Open *settings.py* file
-- Replace the 'default' database settings in the python "DATABASES" dict with your server configuration. **NOTE:** If database is configured with the postgress default arguments only "NAME" and "PASSWORD" will have to be changed. Make sure that everything is enclosed in " " or ' ' as shown below
+- Navigate to `./backend`
+- Create a new **.env** file of the following format
 ```
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'yourdatabasename',
-        'USER': 'postgres',
-        'PASSWORD': 'yourpassword',
-        'HOST': '127.0.0.1',
-        'PORT':'5432',
-    }
-}
-```
+# Django Configuration
+export SECRET_KEY = "django secret key"
 
-- Replace the default SMTP credentials with your credentials for a working OTP system.
-**NOTE**: Make sure that everything is enclosed in " " or ' ' as shown below
+
+# Postgres Server Configuration (For database)
+export NAME = "your database name"
+export PASSWORD = "your database password"
+
+
+# SMTP Server Configuration (For gmail)
+export EMAIL_HOST_USER = "youremail@gmail.com"
+export EMAIL_HOST_PASSWORD = "your email password"
 ```
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'emailhostaddress' #'smtp.gmail.com' for gmail
-EMAIL_PORT = portnumber #587 for gmail
-EMAIL_HOST_USER = 'email@address.com'
-EMAIL_HOST_PASSWORD = 'password'
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-```
+- Replace the details with your system credentials. **NOTE**: Make sure that everything is enclosed in " " or ' ' as shown above
+- To change other settings open `./djreact_sbs/settings.py`
+
 
 
 #### 2. Backend Configuration 
@@ -92,7 +84,7 @@ npm start
 
 ## Authors
 * [**Jaimik Patel**](https://github.com/just-a-rookie-2001)
-* **Moksh Doshi**
+* [**Moksh Doshi**](mailto:mokshdoshi007@gmail.com)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](/LICENSE.md) file for details

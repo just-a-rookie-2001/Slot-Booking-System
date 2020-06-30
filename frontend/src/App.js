@@ -92,7 +92,7 @@ class App extends React.Component {
                             <History />
                         </AdminLayout>
                     </Route>
-                    <Redirect to="/home" />
+                    {/* <Redirect to="/home" /> */}
                 </BrowserRouter>
             </GlobalState>
         );

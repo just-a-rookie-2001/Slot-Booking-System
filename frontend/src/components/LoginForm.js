@@ -9,7 +9,7 @@ class LoginForm extends React.Component {
 
     onFinish = values => {
         console.log('Received values of form: ', values);
-        this.context.login(values.email, values.password)
+        this.context.login(values.email, values.password, values.remember)
     };
 
     render() {
@@ -24,18 +24,14 @@ class LoginForm extends React.Component {
                     name="email"
                     rules={[
                         {
-                            type: 'email',
-                            message: 'Please enter a valid email address',
+                            type: 'pattern',
+                            pattern: new RegExp("[a-z0-9._%+-]+@ahduni.edu.in"),
+                            message: "Please enter an Ahmedabad University Mail"
                         },
                         {
                             required: true,
                             message: 'Please input your Email'
-                        },
-                        // {
-                        //     type: 'pattern',
-                        //     pattern: new RegExp("[a-z0-9._%+-]+@ahduni\.edu\.in"),
-                        //     message: "Please enter an Ahmedabad University Mail"
-                        // }
+                        }
                     ]}
                 >
                     <Input

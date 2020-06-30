@@ -25,36 +25,31 @@ class RoomDetail extends React.Component {
     }
 
     componentDidMount() {
-        axios.defaults.headers = {
-            "Content-Type": "application/json",
-            // Authorization: `Token  ${newprops.token}`
-        }
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
         const roomID = this.props.match.params.roomID;
         console.log(this.props)
         const date = this.state.date;
         axios.post(`http://127.0.0.1:8000/api/filter/roomfilter/`, {
             "date": date,
             "roomId": roomID,
-        }).then(res => {
-            this.setState({ slots: res.data });
-        })
+        }, config).then(res => { this.setState({ slots: res.data }) })
     }
 
     onDateChange = (_date, dateString) => {
-        const roomID = this.props.match.params.roomID;
-        axios.post(`http://127.0.0.1:8000/api/filter/roomfilter/`, {
-            "date": dateString,
-            "roomId": roomID,
-        })
-            .then(res => {
-                this.setState({ slots: res.data, date: dateString });
-            })
+        if (dateString !== "") {
+            const roomID = this.props.match.params.roomID;
+            const config = { headers: { "Authorization": `Token ${this.context.token}` } }
+            axios.post(`http://127.0.0.1:8000/api/filter/roomfilter/`, {
+                "date": dateString,
+                "roomId": roomID,
+            }, config).then(res => { this.setState({ slots: res.data, date: dateString }) })
+        }
     }
 
     handleButtonClick(event, data) {
         event.preventDefault();
         const roomID = this.props.match.params.roomID;
-        console.log(this.state);
+        const config = { headers: { "Authorization": `Token ${this.context.token}` } }
         axios.post(`http://127.0.0.1:8000/api/book/`, {
             "email": this.context.email,
             "date": this.state.date,
@@ -62,12 +57,12 @@ class RoomDetail extends React.Component {
             "endTime": this.state.end,
             "purpose_of_booking": this.state.purpose,
             "roomID": roomID,
-        }).then(_res => {
+        }, config).then(_res => {
             this.setState({ modalVisible: false })
             axios.post(`http://127.0.0.1:8000/api/filter/roomfilter/`, {
                 "date": this.state.date,
                 "roomId": roomID,
-            }).then(res => { this.setState({ slots: res.data }, () => { console.log(this.state.slots) }) })
+            }, config).then(res => { this.setState({ slots: res.data }) })
         }).catch(err => {
             console.log(err);
             this.setState({ modalVisible: false, showMessage: true })
@@ -134,6 +129,7 @@ class RoomDetail extends React.Component {
                             onChange={this.onDateChange}
                             format={"YYYY-MM-DD"}
                             size="large"
+                            showToday={false}
                             disabledDate={current => {
                                 return current < moment();
                             }}
@@ -141,7 +137,6 @@ class RoomDetail extends React.Component {
                     </Col>
                 </Row>
                 <Row gutter={[16, { xs: 32, sm: 24, md: 16, lg: 8 }]} style={{ justifyContent: 'space-around', marginTop: "20px" }}>
-
                     {this.state.slots !== null && this.state.slots.map((value, index) =>
                         <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} key={index}>
                             <Card size="large" title={"Slot " + (index + 1)} style={{ width: 300 }} hoverable>
