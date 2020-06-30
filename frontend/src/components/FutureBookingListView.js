@@ -69,7 +69,7 @@ class UserFutureBookings extends React.Component {
 
     componentDidMount() {
         const config = { headers: { "Authorization": `Token ${this.context.token}` } }
-        axios.get(`http://localhost:8000/api/filter/userfilter/future/${this.context.email}`, config)
+        axios.get(`http://localhost:8000/api/filter/userfilter/future`, config)
             .then(res => {
                 for (var i in res.data) {
                     if (res.data[i]["admin_did_accept"]) {

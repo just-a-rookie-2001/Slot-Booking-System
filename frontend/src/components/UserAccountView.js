@@ -13,7 +13,7 @@ class UserAccount extends React.Component {
     }
     componentDidMount() {
         const config = { headers: { Authorization: `Token  ${this.context.token}` } }
-        axios.get(`http://localhost:8000/api/user/accountinfo/${this.context.email}`, config)
+        axios.get(`http://localhost:8000/api/user/accountinfo`, config)
             .then(res => {
                 this.setState({ user: res.data }, () => console.log(this.state.user));
             })

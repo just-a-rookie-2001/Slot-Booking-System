@@ -9,7 +9,7 @@ class LoginForm extends React.Component {
 
     onFinish = values => {
         console.log('Received values of form: ', values);
-        this.context.login(values.email, values.password)
+        this.context.login(values.email, values.password, values.remember)
     };
 
     render() {

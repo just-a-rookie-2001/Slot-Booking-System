@@ -34,12 +34,12 @@ urlpatterns = [
     path("api/user/verifytoken", VerifyResetToken.as_view()),  #verify token (post)
     path("api/user/changepassword", ChangePassword.as_view()),  #reset password (post)
 
-    path("api/user/accountinfo/<email>", UserAccountInfo.as_view()),
+    path("api/user/accountinfo", UserAccountInfo.as_view()),
     path("api/filter/adminfilter/checkadmin/<email>", IsAdmin.as_view()),
     path("api/filter/adminfilter/pending", AdminRequestActionView.as_view()),
     # path("api/filter/adminfilter/autoaction", AutoActionView.as_view()),
-    path("api/filter/userfilter/past/<email>", UserPastBookingsView.as_view()),
-    path("api/filter/userfilter/future/<email>", UserFutureBookingsView.as_view()),
+    path("api/filter/userfilter/past", UserPastBookingsView.as_view()),
+    path("api/filter/userfilter/future", UserFutureBookingsView.as_view()),
     path("api/filter/roomlist/", RoomListView.as_view()),
     path("api/filter/roomfilter/", RoomDetailView.as_view()),
     path("api/allbookings", BookingHistory.as_view()),

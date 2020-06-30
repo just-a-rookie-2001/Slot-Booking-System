@@ -23,12 +23,12 @@ class GlobalState extends React.Component {
             "password": password,
             "workplace": workplace,
             "user_type": ac_type
-        }).then(_res => { this.setState({ error: null }, () => this.login(email, password)) })
+        }).then(_res => { this.setState({ error: null }, () => this.login(email, password, true)) })
             .catch(err => { this.setState({ error: "Some error occured" }) })
 
     }
 
-    login(username, password, _rememberMe = false) {
+    login(username, password, rememberMe = false) {
         axios.post('http://localhost:8000/api-token-auth/', {
             username: username,
             password: password
@@ -36,7 +36,7 @@ class GlobalState extends React.Component {
             if (response.status === 200) {
                 const admin = response.data.admin
                 const token = response.data.token;
-                const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+                const expirationDate = new Date(new Date().getTime() + (rememberMe?24:1)*60*60*1000);
                 localStorage.setItem("email", username);
                 localStorage.setItem('token', token);
                 localStorage.setItem('expirationDate', expirationDate);
@@ -48,15 +48,29 @@ class GlobalState extends React.Component {
                     email: username,
                     isAdmin: admin,
                 })
+                setTimeout(() => { this.logout() }, (rememberMe?24:1)*60*60*1000);
             } else { this.setState({ error: "Something went wrong" }) }
         }).catch(_err => { this.setState({ error: "Please check your email or password" }) })
     }
 
     logout() {
         localStorage.clear();
-        this.setState({ isAuthenticated: false, token: null, isAdmin: false }, () => {
-            console.log("logging out");
-        });
+        this.setState({ isAuthenticated: false, token: null, isAdmin: false });
+    }
+    
+    componentDidMount() {
+        console.log("inside global context didMount");
+        const token = localStorage.getItem('token');
+        const expirationDate = new Date(localStorage.getItem('expirationDate'));
+        if (token === undefined || expirationDate === undefined) {
+            this.logout()
+        } else {
+            if (expirationDate <= new Date()) {
+                this.logout()
+            } else {
+                setTimeout(() => this.logout(), (expirationDate.getTime() - new Date().getTime()))
+            }
+        }
     }
 
     render() {

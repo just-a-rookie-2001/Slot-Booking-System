@@ -3,7 +3,7 @@ import uuid
 
 from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count, Max, Min, Sum
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -139,8 +139,8 @@ class UserAccountInfo(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, email):
-        user = get_user_model().objects.get(email=email)
+    def get(self, request):
+        user = get_user_model().objects.get(email=request.user)
         total, accepted, pending, declined = 0, 0, 0, 0
         try:
             for obj in Booking.objects.filter(user__exact=user.id):
@@ -170,8 +170,8 @@ class UserPastBookingsView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, email):
-        userId = get_user_model().objects.get(email=email).id
+    def get(self, request):
+        userId = get_user_model().objects.get(email=request.user).id
         currTime = datetime.datetime.now()
         filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
         res = []
@@ -194,10 +194,10 @@ class UserFutureBookingsView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, email):
+    def get(self, request):
         currTime = datetime.datetime.now()
         filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
-        userId = get_user_model().objects.get(email=email).id
+        userId = get_user_model().objects.get(email=request.user).id
         slot = Booking.objects.filter(user__exact=userId, booking_date__gte=datetime.date.today())
         res = []
         for item in slot.filter(booking_date__gt=datetime.date.today()).union(slot.filter(booking_date__exact=datetime.date.today(), end_timing__gte=filterTime)):
