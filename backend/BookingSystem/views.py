@@ -45,13 +45,8 @@ class RoomListView(APIView):
     def post(self, request):
         try:
             res, data = [], request.data
-            date = data["date"]
-            start, end = data["start"], data["end"]
-            h, m = datetime.datetime.strptime(start, "%H:%M").hour, datetime.datetime.strptime(start, "%H:%M").minute
-            hr, mn = datetime.datetime.strptime(end, "%H:%M").hour, datetime.datetime.strptime(end, "%H:%M").minute
-            st = int(((h + m / 60) - 7.5) * 2)
-            et = int(((hr + mn / 60) - 7.5) * 2) - 1
-            q = Booking.objects.filter(booking_date__exact=date, start_timing__exact=st, end_timing__exact=et).order_by('-admin_did_accept','-is_pending')
+            date, start, end = data["date"], data["start"], data["end"]
+            q = Booking.objects.filter(booking_date__exact=date, start_timing=start, end_timing=end).order_by('-admin_did_accept','-is_pending')
             for item in q:
                 x = {"id": item.Room.id,
                      "room_name": item.Room.room_name,
@@ -76,60 +71,70 @@ class RoomDetailView(APIView):
     
     def post(self, request):
         try:
-            res, date, roomID = [], request.data["date"], request.data["roomId"]
+            res, date, roomID = [], request.data["date"], request.data["id"]
             for item in Booking.objects.filter(booking_date__exact=date, Room__exact=roomID).order_by('start_timing', '-admin_did_accept', '-is_pending').distinct('start_timing'):
                 x = {"start_timing": item.start_timing,
                      "end_timing": item.end_timing,
                      "admin_did_accept": item.admin_did_accept,
                      "is_pending": item.is_pending}
                 res.append(x)
+            # Create and append empty slots
             check = list(i['start_timing'] for i in res)
-            for x in range(1, 25, 3):
-                if x not in check:
-                    res.append({"start_timing": x,
-                                "end_timing": x+2,
-                                "admin_did_accept": False,
-                                "is_pending": False})
+            start = datetime.datetime(2000, 1, 1, 8, 0, 0)
+            end = datetime.datetime(2000, 1, 1, 20, 30, 0)
+            delta = datetime.timedelta(hours=1, minutes=30)
+            while start <= end:
+                if start.time() not in check:
+                    y = {"start_timing": start.time(),
+                         "end_timing": (start+delta).time(),
+                         "admin_did_accept": False,
+                         "is_pending": False}
+                    res.append(y)
+                start += delta
             return Response(sorted(res, key=lambda i: i['start_timing']))
         except:
             return Response({"message": "Invalid/Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookRoomSlotView(APIView):
+    startTimes = [datetime.time(8, 0), datetime.time(9, 30), datetime.time(11, 0), datetime.time(12, 30), datetime.time(14, 0), datetime.time(15, 30), datetime.time(17, 0), datetime.time(18, 30), datetime.time(20, 0)]
+    endTimes = [datetime.time(9, 30), datetime.time(11, 0), datetime.time(12, 30), datetime.time(14, 0), datetime.time(15, 30), datetime.time(17, 0), datetime.time(18, 30), datetime.time(20, 0), datetime.time(20, 30)]
+
     parser_classes = [JSONParser]
 
     def post(self, request):
         try:
             res, data = [], request.data
+            try:
+                purpose = data["purpose_of_booking"]
+            except:
+                purpose = "Purpose not provided"
+            start = datetime.datetime.strptime(data["startTime"],"%H:%M:%S").time()
+            end = datetime.datetime.strptime(data["endTime"], "%H:%M:%S").time()
+            roomId, date = data["roomID"], data["date"]
+            if (start not in BookRoomSlotView.startTimes) or (end not in BookRoomSlotView.endTimes):
+                return Response("This slot does not exist. Booking not possible")
 
-            if (data["startTime"] not in range(1, 25, 3)) or (data["endTime"] not in range(3, 25, 3)):
-                return Response({"message": "This slot does not exist. Booking not possible"})
-
-            if Booking.objects.filter(booking_date__exact=data["date"], start_timing__exact=data["startTime"], end_timing__exact=data["endTime"], user__email__exact=data["email"]).exclude(admin_did_accept=False, is_pending=False).count() >= 1:
+            if Booking.objects.filter(booking_date__exact=date, start_timing=start, end_timing=end, user=request.user).exclude(admin_did_accept=False, is_pending=False).count() >= 1:
                 return Response("You have already booked this timing. You cannot book 2 slots at the same time", status.HTTP_409_CONFLICT)
             
-            for item in Booking.objects.filter(booking_date__exact=data["date"], Room__exact=data["roomID"]):
-                if (data["endTime"] < item.start_timing or data["startTime"] > item.end_timing):
+            for item in Booking.objects.filter(booking_date__exact=date, Room__exact=roomId):
+                if (end <= item.start_timing or start >= item.end_timing):
                     # no clashes if the entire for loop doesn't break then the following else is executed
                     continue
                 elif (item.admin_did_accept == True):
                     # Already booked
-                    return Response({"Message": "This slot has already been booked"}, status=status.HTTP_306_RESERVED)
+                    return Response("This slot has already been booked", status=status.HTTP_306_RESERVED)
                 else:
                     # empty slot with many bookings
-                    userId = get_user_model().objects.get(email=data["email"])
-                    roomId = Room.objects.get(id=uuid.UUID(data["roomID"]))
-                    b = Booking.objects.create(user=userId, Room=roomId, booking_date=data["date"],
-                                               start_timing=data["startTime"], end_timing=data["endTime"], purpose_of_booking=data["purpose_of_booking"], is_pending=True,)
-                    return Response({"Message": "Booking has been added to the already existing queue"}, status=status.HTTP_202_ACCEPTED)
+                    room = Room.objects.get(id__exact=roomId)
+                    b = Booking.objects.create(user=request.user, Room=room, booking_date=date, start_timing=start, end_timing=end, purpose_of_booking=purpose, is_pending=True)
+                    return Response("Booking has been added to the already existing queue", status=status.HTTP_202_ACCEPTED)
             else:
                 # no clashes executed if for loop doesnt  break
-                userId = get_user_model().objects.get(email=data["email"])
-                roomId = Room.objects.get(id=uuid.UUID(data["roomID"]))
-                b = Booking.objects.create(user=userId, Room=roomId, booking_date=data["date"],
-                                           start_timing=data["startTime"], end_timing=data["endTime"],
-                                           purpose_of_booking=data["purpose_of_booking"], is_pending=True,)
-                return Response({"Message": "Booking has been added to the queue"}, status=status.HTTP_202_ACCEPTED)
+                room = Room.objects.get(id__exact=roomId)
+                b = Booking.objects.create(user=request.user, Room=room, booking_date=date, start_timing=start, end_timing=end, purpose_of_booking=purpose, is_pending=True)
+                return Response("Booking has been added to the queue", status=status.HTTP_202_ACCEPTED)
         except:
             return Response({"message": "Invalid/Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -140,10 +145,9 @@ class UserAccountInfo(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = get_user_model().objects.get(email=request.user)
         total, accepted, pending, declined = 0, 0, 0, 0
         try:
-            for obj in Booking.objects.filter(user__exact=user.id):
+            for obj in Booking.objects.filter(user=request.user):
                 total += 1
                 if obj.admin_did_accept:
                     accepted += 1
@@ -152,10 +156,10 @@ class UserAccountInfo(APIView):
                 else:
                     declined += 1
             res = {
-                "id": user.id,
-                "email": user.email,
-                "name": user.name,
-                "type": user.user_type,
+                "id": request.user.id,
+                "email": request.user.email,
+                "name": request.user.name,
+                "type": request.user.user_type,
                 "total": total,
                 "accepted": accepted,
                 "pending": pending,
@@ -171,11 +175,10 @@ class UserPastBookingsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        userId = get_user_model().objects.get(email=request.user).id
-        currTime = datetime.datetime.now()
-        filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
+        # currTime = datetime.datetime.now()
+        # filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
         res = []
-        for item in Booking.objects.filter(user__exact=userId, booking_date__lte=datetime.date.today(), end_timing__lt=filterTime):
+        for item in Booking.objects.filter(user__exact=request.user, booking_date__lte=datetime.date.today(), end_timing__lt=datetime.datetime.now().time()):
             x = {"booking_date": item.booking_date,
                  "start_timing": item.start_timing,
                  "end_timing": item.end_timing,
@@ -195,12 +198,12 @@ class UserFutureBookingsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        currTime = datetime.datetime.now()
-        filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
-        userId = get_user_model().objects.get(email=request.user).id
-        slot = Booking.objects.filter(user__exact=userId, booking_date__gte=datetime.date.today())
+        # currTime = datetime.datetime.now()
+        # filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
+        # userId = get_user_model().objects.get(email=request.user).id
+        slot = Booking.objects.filter(user=request.user, booking_date__gte=datetime.date.today())
         res = []
-        for item in slot.filter(booking_date__gt=datetime.date.today()).union(slot.filter(booking_date__exact=datetime.date.today(), end_timing__gte=filterTime)):
+        for item in slot.filter(booking_date__gt=datetime.date.today()).union(slot.filter(booking_date__exact=datetime.date.today(), end_timing__gte=datetime.datetime.now().time())):
             x = {"booking_date": item.booking_date,
                  "start_timing": item.start_timing,
                  "end_timing": item.end_timing,
@@ -234,7 +237,7 @@ class AdminDashboardStats(APIView):
         
         slots = {}
         for item in bookings.order_by('start_timing').distinct('start_timing').values_list('start_timing', flat=True):
-            slots[item] = bookings.filter(start_timing__exact=item).count()
+            slots[str(item)] = bookings.filter(start_timing__exact=item).count()
 
         return Response([count, countSchool, slots])
 
