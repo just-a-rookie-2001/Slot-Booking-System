@@ -1,8 +1,8 @@
 import React from 'react';
-import { Form, Input, Button, Select, } from 'antd';
-import { Link } from "react-router-dom";
-import UserContext from "../context/usercontext";
-// import { MailOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Select } from 'antd';
+import { Link } from 'react-router-dom';
+
+import UserContext from '../context/usercontext';
 
 
 const { Option } = Select;
@@ -24,21 +24,15 @@ const tailLayout = {
 class RegisterForm extends React.Component {
     static contextType = UserContext;
 
-    onFinish = values => {
-        console.log(values);
+    onFinish = (values) => {
         this.context.register(values.email, values.name, values.password, values.workplace, values.user_type);
     };
-
 
     render() {
         return (
             <Form {...layout} onFinish={this.onFinish}>
-                <Form.Item
-                    name="name"
-                    label="Name"
-                    rules={[{ required: true, message: 'Please enter your name' }]}
-                >
-                    <Input placeholder="Name" type='text' />
+                <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter your name' }]}>
+                    <Input placeholder="Name" type="text" />
                 </Form.Item>
                 <Form.Item
                     name="email"
@@ -46,21 +40,26 @@ class RegisterForm extends React.Component {
                     rules={[
                         {
                             type: 'pattern',
-                            pattern: new RegExp("[a-z0-9._%+-]+@ahduni.edu.in"),
-                            message: "Please enter an Ahmedabad University Mail"
+                            pattern: new RegExp('[a-z0-9._%+-]+@ahduni.edu.in'),
+                            message: 'Please enter an Ahmedabad University Mail',
                         },
                         {
                             required: true,
-                            message: 'Please input your Email'
+                            message: 'Please input your Email',
                         },
                     ]}
                 >
-                    <Input placeholder="E-Mail" type='email' />
+                    <Input placeholder="E-Mail" type="email" />
                 </Form.Item>
                 <Form.Item
                     name="password"
                     label="Password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your password!',
+                        },
+                    ]}
                     hasFeedback
                 >
                     <Input.Password placeholder="Password" />
@@ -88,11 +87,7 @@ class RegisterForm extends React.Component {
                 >
                     <Input.Password placeholder="Confirm Password" />
                 </Form.Item>
-                <Form.Item
-                    name="workplace"
-                    label="Workplace"
-                    rules={[{ required: true }]}
-                >
+                <Form.Item name="workplace" label="Workplace" rules={[{ required: true }]}>
                     <Select placeholder="Select your Workplace">
                         <Option value=" "></Option>
                         <Option value="SEAS">School of Engineering and Applied Sciences</Option>
@@ -102,11 +97,7 @@ class RegisterForm extends React.Component {
                         <Option value="SCS">School of Computer Studies</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item
-                    name="user_type"
-                    label="Account Type"
-                    rules={[{ required: true }]}
-                >
+                <Form.Item name="user_type" label="Account Type" rules={[{ required: true }]}>
                     <Select placeholder="Select your Account Type">
                         <Option value="F">Faculty</Option>
                         <Option value="C">Club</Option>
@@ -116,11 +107,8 @@ class RegisterForm extends React.Component {
                     <Button type="primary" htmlType="submit">
                         Register
                     </Button>
-                    <Button type="secondary" className="login-form-button"
-                        style={{ marginLeft: '10px' }}>
-                        <Link to="/login">
-                            Login
-                        </Link>
+                    <Button type="secondary" className="login-form-button" style={{ marginLeft: '10px' }}>
+                        <Link to="/login">Login</Link>
                     </Button>
                 </Form.Item>
             </Form>
@@ -128,4 +116,4 @@ class RegisterForm extends React.Component {
     }
 }
 
-export default RegisterForm
+export default RegisterForm;

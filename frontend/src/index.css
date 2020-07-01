@@ -1,15 +1,13 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+        'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .logo {
@@ -18,7 +16,7 @@ code {
     text-align: center;
     margin: 24px;
 }
-  
+
 .site-layout .site-layout-background {
     background: #fff;
 }
@@ -45,17 +43,19 @@ code {
     width: 100%;
 }
 
-.partiallyBookedBtn{
+.partiallyBookedBtn {
     background-color: gold;
     border-color: gold;
     color: white;
 }
-.partiallyBookedBtn:hover,.partiallyBookedBtn:active, .partiallyBookedBtn:focus{
+.partiallyBookedBtn:hover,
+.partiallyBookedBtn:active,
+.partiallyBookedBtn:focus {
     background-color: white;
     border-color: gold;
     color: gold;
 }
-.bookPrimaryBtn:hover{
+.bookPrimaryBtn:hover {
     border-color: #1890ff;
     color: #1890ff;
     background-color: white;
@@ -64,37 +64,37 @@ code {
     border: 1px solid rgb(235, 237, 240);
 }
 
-.sidenav{
+.sidenav {
     height: 100vh;
     position: sticky;
     top: 0;
     left: 0;
 }
 
-.responsiveCard{
+.responsiveCard {
     width: 300px;
 }
-.graph1{
+.graph1 {
     width: 35%;
 }
-.graph2{
+.graph2 {
     width: 65%;
 }
 
 @media only screen and (max-width: 375px) {
     .responsiveCard {
-      width: 200px;
+        width: 200px;
     }
 }
 @media only screen and (max-width: 768px) {
-    .graph1{
+    .graph1 {
         width: 100%;
     }
-    .graph2{
+    .graph2 {
         width: 100%;
     }
 }
-@media only screen and (max-width: 425px){
+@media only screen and (max-width: 425px) {
     .site-layout-content {
         padding: 12px;
         min-height: 280px;
