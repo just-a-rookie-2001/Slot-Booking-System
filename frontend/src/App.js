@@ -23,80 +23,80 @@ import Rooms from './components/AdminRoom';
 import History from './components/AdminHistory';
 
 class App extends React.Component {
-	static contextType = UserContext;
+    static contextType = UserContext;
 
-	render() {
-		return (
-			<GlobalState>
-				<BrowserRouter>
-					<Route exact path="/">
-						<Redirect to="/login" />
-					</Route>
-					<Route exact path="/register">
-						<AuthLayout>
-							<RegisterForm />
-						</AuthLayout>
-					</Route>
-					<Route exact path="/login">
-						<AuthLayout>
-							<LoginForm />
-						</AuthLayout>
-					</Route>
-					<Route exact path="/forgotpassword">
-						<AuthLayout>
-							<ForgotPasswordForm />
-						</AuthLayout>
-					</Route>
-					<Route exact path="/home">
-						<HomePage>
-							<RoomList />
-						</HomePage>
-					</Route>
-					<Route exact path="/rooms/:roomID">
-						<HomePage>
-							<RoomDetail />
-						</HomePage>
-					</Route>
-					<Route exact path="/pastbookings">
-						<HomePage>
-							<PastBookings />
-						</HomePage>
-					</Route>
-					<Route exact path="/futurebookings">
-						<HomePage>
-							<FutureBookings />
-						</HomePage>
-					</Route>
-					<Route exact path="/account">
-						<HomePage>
-							<UserAccount />
-						</HomePage>
-					</Route>
-					<Route exact path="/admin/dashboard">
-						<AdminLayout>
-							<Dashboard />
-						</AdminLayout>
-					</Route>
-					<Route exact path="/admin/bookings">
-						<AdminLayout>
-							<Bookings />
-						</AdminLayout>
-					</Route>
-					<Route exact path="/admin/rooms">
-						<AdminLayout>
-							<Rooms />
-						</AdminLayout>
-					</Route>
-					<Route exact path="/admin/history">
-						<AdminLayout>
-							<History />
-						</AdminLayout>
-					</Route>
-					{/* <Redirect to="/home" /> */}
-				</BrowserRouter>
-			</GlobalState>
-		);
-	}
+    render() {
+        return (
+            <GlobalState>
+                <BrowserRouter>
+                    <Route exact path="/">
+                        <Redirect to="/login" />
+                    </Route>
+                    <Route exact path="/register">
+                        <AuthLayout>
+                            <RegisterForm />
+                        </AuthLayout>
+                    </Route>
+                    <Route exact path="/login">
+                        <AuthLayout>
+                            <LoginForm />
+                        </AuthLayout>
+                    </Route>
+                    <Route exact path="/forgotpassword">
+                        <AuthLayout>
+                            <ForgotPasswordForm />
+                        </AuthLayout>
+                    </Route>
+                    <Route exact path="/home">
+                        <HomePage>
+                            <RoomList />
+                        </HomePage>
+                    </Route>
+                    <Route exact path="/rooms/:roomID">
+                        <HomePage>
+                            <RoomDetail />
+                        </HomePage>
+                    </Route>
+                    <Route exact path="/pastbookings">
+                        <HomePage>
+                            <PastBookings />
+                        </HomePage>
+                    </Route>
+                    <Route exact path="/futurebookings">
+                        <HomePage>
+                            <FutureBookings />
+                        </HomePage>
+                    </Route>
+                    <Route exact path="/account">
+                        <HomePage>
+                            <UserAccount />
+                        </HomePage>
+                    </Route>
+                    <Route exact path="/admin/dashboard">
+                        <AdminLayout>
+                            <Dashboard />
+                        </AdminLayout>
+                    </Route>
+                    <Route exact path="/admin/bookings">
+                        <AdminLayout>
+                            <Bookings />
+                        </AdminLayout>
+                    </Route>
+                    <Route exact path="/admin/rooms">
+                        <AdminLayout>
+                            <Rooms />
+                        </AdminLayout>
+                    </Route>
+                    <Route exact path="/admin/history">
+                        <AdminLayout>
+                            <History />
+                        </AdminLayout>
+                    </Route>
+                    {/* <Redirect to="/home" /> */}
+                </BrowserRouter>
+            </GlobalState>
+        );
+    }
 }
 
 export default App;

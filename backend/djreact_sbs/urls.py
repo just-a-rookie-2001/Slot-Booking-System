@@ -37,7 +37,7 @@ urlpatterns = [
     path("api/user/accountinfo", UserAccountInfo.as_view()),
     path("api/filter/adminfilter/checkadmin/<email>", IsAdmin.as_view()),
     path("api/filter/adminfilter/pending", AdminRequestActionView.as_view()),
-    # path("api/filter/adminfilter/autoaction", AutoActionView.as_view()),
+    path("api/filter/adminfilter/autoaction", AutoActionView.as_view()),
     path("api/filter/userfilter/past", UserPastBookingsView.as_view()),
     path("api/filter/userfilter/future", UserFutureBookingsView.as_view()),
     path("api/filter/roomlist/", RoomListView.as_view()),

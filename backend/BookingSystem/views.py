@@ -80,11 +80,16 @@ class RoomDetailView(APIView):
                 res.append(x)
             # Create and append empty slots
             check = list(i['start_timing'] for i in res)
+            todayDate, todayTime = str(datetime.date.today()), datetime.datetime.today().time()
+            buffer = datetime.timedelta(minutes=10)
             start = datetime.datetime(2000, 1, 1, 8, 0, 0)
             end = datetime.datetime(2000, 1, 1, 20, 30, 0)
             delta = datetime.timedelta(hours=1, minutes=30)
             while start <= end:
                 if start.time() not in check:
+                    if todayDate == date and (start+buffer).time() <= todayTime:
+                        start += delta
+                        continue
                     y = {"start_timing": start.time(),
                          "end_timing": (start+delta).time(),
                          "admin_did_accept": False,
@@ -257,7 +262,7 @@ class AdminRequestActionView(APIView):
                  "admin_did_accept": item.admin_did_accept,
                  "is_pending": item.is_pending,
                  "purpose_of_booking": item.purpose_of_booking,
-                 "user": get_user_model().objects.get(email=item.user).email,
+                 "user": item.user.email,
                  "room_id": room.id,
                  "room_name": room.room_name,
                  "room_number": room.room_number}
@@ -271,7 +276,7 @@ class AdminRequestActionView(APIView):
             try:
                 defaultMessage = data["message"]
             except:
-                defaultMessage = "This request was automatically declined because it clashed with another request that was accepted. Any inconvenience is regretted."
+                defaultMessage = "This request was automatically declined because it clashed with another request that was accepted."
             try:
                 feedback = data["admin_feedback"]
             except:
@@ -289,8 +294,8 @@ class AdminRequestActionView(APIView):
                 slot.save()
                 initialSlots = Booking.objects.filter(
                     booking_date__exact=slot.booking_date, Room=slot.Room).exclude(id=slot.id)
-                rejectSlots = (initialSlots.filter(start_timing__gt=slot.end_timing)
-                               | initialSlots.filter(end_timing__lt=slot.start_timing))
+                rejectSlots = (initialSlots.filter(start_timing__gte=slot.end_timing)
+                               | initialSlots.filter(end_timing__lte=slot.start_timing))
                 finalSlots = initialSlots.exclude(id__in=rejectSlots).update(
                     admin_did_accept=False, is_pending=False, admin_feedback=defaultMessage)
             return Response({"message": "Action Completed"}, status=status.HTTP_200_OK)
@@ -318,3 +323,38 @@ class BookingHistory(APIView):
                  "admin_feedback": item.admin_feedback}
             res.append(x)
         return Response(res, status=status.HTTP_200_OK)
+
+
+class AutoActionView(APIView):
+    def get(self, request):
+        try:
+            x = datetime.datetime.now()
+            rounded = (x - (x - datetime.datetime.min) %
+                       datetime.timedelta(minutes=30)).strftime("%H:%M")
+            for room in Room.objects.all():
+                booking = Booking.objects.filter(
+                    is_pending=True, booking_date=datetime.date.today(), Room=room)
+                # Handle empty slots
+                if not booking.exists():
+                    print("no data to take action upon")
+                else:
+                    slots = booking.filter(start_timing=rounded)
+                    if not slots.exists():
+                        print("This slot doesn't have any pending requests")
+                    else:
+                        y = min(slots.values_list('created_at', flat=True))
+                        accept = slots.get(created_at=y)
+                        accept.admin_did_accept = True
+                        accept.is_pending = False
+                        accept.admin_feedback = "Accepted on first come first server basis"
+                        accept.save()
+                        reject = slots.exclude(id=accept.id)
+                        feedback = "Declined on first come first serve basis"
+                        reject.update(admin_did_accept=False,
+                                      is_pending=False, admin_feedback=feedback)
+                        print("Successfully ran the jobs")
+            return Response(" ")
+        except Exception as e:
+            print("Some error occured: "+str(e))
+            return Response(" ")
+            
