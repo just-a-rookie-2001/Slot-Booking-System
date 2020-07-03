@@ -96,9 +96,8 @@ class AdminRoom extends React.Component {
             return (
                 <React.Fragment key={key}>
                     {divider}
-                    <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} >
+                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} >
                         <Card
-                            style={{ width: 300 }}
                             cover={this.coverPhoto(item.school)}
                             actions={[
                                 <Popconfirm
@@ -175,9 +174,8 @@ class AdminRoom extends React.Component {
                 {this.renderRooms()}
                 <>
                     <Divider>Create New Room</Divider>
-                    <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }}>
+                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6}>
                         <Card
-                            style={{ width: 300 }}
                             cover={<img alt="example" src="/images/meetingroom.jpg" />}
                             hoverable
                             onClick={(e) => this.setState({ formVisible: true })}

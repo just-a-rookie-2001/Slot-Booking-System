@@ -83,10 +83,12 @@ class RoomDetailView(APIView):
             todayDate, todayTime = str(datetime.date.today()), datetime.datetime.today().time()
             buffer = datetime.timedelta(minutes=10)
             start = datetime.datetime(2000, 1, 1, 8, 0, 0)
-            end = datetime.datetime(2000, 1, 1, 20, 30, 0)
+            end = datetime.datetime(2000, 1, 1, 19, 00, 0)
             delta = datetime.timedelta(hours=1, minutes=30)
             while start <= end:
                 if start.time() not in check:
+                    if start == datetime.datetime(2000, 1, 1, 12, 30, 0):
+                        start += datetime.timedelta(minutes=30)
                     if todayDate == date and (start+buffer).time() <= todayTime:
                         start += delta
                         continue
@@ -102,8 +104,8 @@ class RoomDetailView(APIView):
 
 
 class BookRoomSlotView(APIView):
-    startTimes = [datetime.time(8, 0), datetime.time(9, 30), datetime.time(11, 0), datetime.time(12, 30), datetime.time(14, 0), datetime.time(15, 30), datetime.time(17, 0), datetime.time(18, 30), datetime.time(20, 0)]
-    endTimes = [datetime.time(9, 30), datetime.time(11, 0), datetime.time(12, 30), datetime.time(14, 0), datetime.time(15, 30), datetime.time(17, 0), datetime.time(18, 30), datetime.time(20, 0), datetime.time(20, 30)]
+    startTimes = [datetime.time(8, 0), datetime.time(9, 30), datetime.time(11, 0), datetime.time(13, 0), datetime.time(14, 30), datetime.time(16, 0), datetime.time(17, 30), datetime.time(19, 0)]
+    endTimes = [datetime.time(9, 30), datetime.time(11, 0), datetime.time(12, 30), datetime.time(14, 30), datetime.time(16, 0), datetime.time(17, 30), datetime.time(19, 0), datetime.time(20, 30)]
 
     parser_classes = [JSONParser]
 

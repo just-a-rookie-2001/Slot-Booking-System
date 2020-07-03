@@ -177,7 +177,7 @@ class RoomDetail extends React.Component {
                             onChange={this.onDateChange}
                             format={'YYYY-MM-DD'}
                             size="large"
-                            showToday={false}
+                            allowClear={false}
                             disabledDate={(current) => {
                                 return current <= moment().subtract(1,'day');
                             }}
@@ -193,8 +193,8 @@ class RoomDetail extends React.Component {
                 >
                     {this.state.slots !== null &&
                         this.state.slots.map((value, index) => (
-                            <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} key={index}>
-                                <Card size="large" title={'Slot ' + (index + 1)} style={{ width: 300 }} hoverable>
+                            <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={index}>
+                                <Card size="large" title={'Slot ' + (index + 1)} hoverable>
                                     <p>From: {moment(value['start_timing'], 'HH:mm:ss').format('HH:mm')}</p>
                                     <p>To: {moment(value['end_timing'], 'HH:mm:ss').format('HH:mm')}</p>
                                     <p>{this.renderButton(value)}</p>

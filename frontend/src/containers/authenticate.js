@@ -41,7 +41,10 @@ class AuthLayout extends React.Component {
                     >
                         <div className="site-layout-content">{this.props.children}</div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>Created by Jaimik Patel and Moksh Doshi</Footer>
+                    <Footer style={{ textAlign: 'center' }}>
+                        Created by Jaimik Patel and Moksh Doshi as a part of Website Making Challenge 2020, Programming
+                        Club
+                    </Footer>
                 </Layout>
             </div>
         );

@@ -104,7 +104,7 @@ npm start
 ## Authors
 
 - [**Jaimik Patel**](https://github.com/just-a-rookie-2001)
-- [**Moksh Doshi**](mailto:mokshdoshi007@gmail.com)
+- [**Moksh Doshi**](https://github.com/mokshdoshi007)
 
 ## License
 

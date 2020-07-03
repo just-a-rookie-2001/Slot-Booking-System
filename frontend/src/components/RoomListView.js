@@ -98,10 +98,10 @@ class RoomList extends React.Component {
                     return (
                         <>
                             {divider}
-                            <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} key={key}>
+                            <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={key}>
                                 <Link to={`/rooms/${item.id}`}>
                                     <Badge count={result} style={{ backgroundColor: color }}>
-                                        <Card style={{ width: 300 }} cover={this.coverPhoto(item['school'])} hoverable>
+                                        <Card cover={this.coverPhoto(item['school'])} hoverable>
                                             <Meta
                                                 avatar={<Avatar src="logo.png" />}
                                                 title={item.room_name}
@@ -117,10 +117,10 @@ class RoomList extends React.Component {
                     return (
                         <>
                             {divider}
-                            <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} key={key}>
+                            <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={key}>
                                 <Link to={`/rooms/${item.id}`}>
                                     <Badge count={result} style={{ backgroundColor: color }}>
-                                        <Card style={{ width: 300 }} cover={this.coverPhoto(item['school'])} hoverable>
+                                        <Card cover={this.coverPhoto(item['school'])} hoverable>
                                             <Meta
                                                 avatar={<Avatar src="logo.png" />}
                                                 title={item.room_name}
@@ -137,10 +137,10 @@ class RoomList extends React.Component {
                 return (
                     <>
                         {divider}
-                        <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} key={key}>
+                        <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={key}>
                             <Link to={`/rooms/${item.id}`}>
                                 <Badge count={result} style={{ backgroundColor: color }}>
-                                    <Card style={{ width: 300 }} cover={this.coverPhoto(item['school'])} hoverable>
+                                    <Card cover={this.coverPhoto(item['school'])} hoverable>
                                         <Meta
                                             avatar={<Avatar src="logo.png" />}
                                             title={item.room_name}
@@ -156,9 +156,9 @@ class RoomList extends React.Component {
             return (
                 <>
                     {divider}
-                    <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }} key={key}>
+                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={key}>
                         <Link to={`/rooms/${item.id}`}>
-                            <Card style={{ width: 300 }} cover={this.coverPhoto(item['school'])} hoverable>
+                            <Card cover={this.coverPhoto(item['school'])} hoverable>
                                 <Meta
                                     avatar={<Avatar src="logo.png" />}
                                     title={item.room_number + ' - ' + item.room_name}
@@ -192,6 +192,28 @@ class RoomList extends React.Component {
         }
     };
 
+    handleSlots = () => {
+        let arr = [
+            <Select.Option value="8:00-9:30">8:00 -&gt; 9:30</Select.Option>,
+            <Select.Option value="9:30-11:00">9:30 -&gt; 11:00</Select.Option>,
+            <Select.Option value="11:00-12:30">11:00 -&gt; 12:30</Select.Option>,
+            <Select.Option value="13:00-14:30">13:00 -&gt; 14:30</Select.Option>,
+            <Select.Option value="14:30-16:00">14:30 -&gt; 16:00</Select.Option>,
+            <Select.Option value="16:00-17:30">16:00 -&gt; 17:30</Select.Option>,
+            <Select.Option value="17:30-19:00">17:30 -&gt; 19:00</Select.Option>,
+            <Select.Option value="19:00-20:30">19:00 -&gt; 20:30</Select.Option>,
+        ];
+        if (moment(this.state.date).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD')) {
+            return arr.map((value, index) => {
+                if (moment(value.props.value.split('-')[0], 'HH:mm') > moment().add(15, 'minutes')) return value;
+                return null;
+            });
+        }
+        return arr.map((value, index) => {
+            return value;
+        });
+    };
+
     render() {
         return (
             <div>
@@ -202,9 +224,9 @@ class RoomList extends React.Component {
                             onChange={(_date, dateString) => this.setState({ date: dateString })}
                             format={'YYYY-MM-DD'}
                             size="large"
-                            showToday={false}
+                            allowClear={false}
                             disabledDate={(current) => {
-                                return current < moment();
+                                return current <= moment().subtract(1, 'day');
                             }}
                         />
                     </Col>
@@ -224,14 +246,7 @@ class RoomList extends React.Component {
                                 }
                             }}
                         >
-                            <Select.Option value="8:00-9:30">8:00 -&gt; 9:30</Select.Option>
-                            <Select.Option value="9:30-11:00">9:30 -&gt; 11:00</Select.Option>
-                            <Select.Option value="11:00-12:30">11:00 -&gt; 12:30</Select.Option>
-                            <Select.Option value="12:30-14:00">12:30 -&gt; 14:00</Select.Option>
-                            <Select.Option value="14:00-15:30">14:00 -&gt; 15:30</Select.Option>
-                            <Select.Option value="15:30-17:00">15:30 -&gt; 17:00</Select.Option>
-                            <Select.Option value="17:00-18:30">17:00 -&gt; 18:30</Select.Option>
-                            <Select.Option value="18:30-20:00">18:30 -&gt; 20:00</Select.Option>
+                            {this.handleSlots()}
                         </Select>
                     </Col>
                 </Row>

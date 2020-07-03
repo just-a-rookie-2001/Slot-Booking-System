@@ -104,7 +104,10 @@ class AdminPage extends React.Component {
                             {this.props.children}
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>Created by Jaimik Patel and Moksh Doshi</Footer>
+                    <Footer style={{ textAlign: 'center' }}>
+                        Created by Jaimik Patel and Moksh Doshi as a part of Website Making Challenge 2020, Programming
+                        Club
+                    </Footer>
                 </Layout>
             </Layout>
         );

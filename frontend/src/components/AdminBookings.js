@@ -140,8 +140,8 @@ class AdminBooking extends React.Component {
             return (
                 <React.Fragment key={index}>
                     {divider}
-                    <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }}>
-                        <Card size="large" title={'Request ' + (index + 1)} style={{ width: 300 }} hoverable>
+                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6}>
+                        <Card size="large" title={'Request ' + (index + 1)} hoverable>
                             <p>Requested By: {value['user']}</p>
                             <p>Room: {value['room_number'] + ' - ' + value['room_name']}</p>
                             <p>Date: {value['booking_date']}</p>
