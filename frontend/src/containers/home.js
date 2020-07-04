@@ -1,9 +1,10 @@
 import React from 'react';
 import { Redirect, Link, withRouter } from 'react-router-dom';
-import UserContext from '../context/usercontext';
-
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { CalendarOutlined, ClockCircleOutlined, HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+
+import UserContext from '../context/usercontext';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -77,7 +78,7 @@ class HomePage extends React.Component {
                         <Menu.Item key="/account" icon={<UserOutlined />}>
                             <Link to="/account">Your Account</Link>
                         </Menu.Item>
-                        <Menu.Item key="5" icon={<LogoutOutlined />} onClick={this.context.logout}>
+                        <Menu.Item key="/logout" icon={<LogoutOutlined />} onClick={this.context.logout}>
                             Logout
                         </Menu.Item>
                     </Menu>

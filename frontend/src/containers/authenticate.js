@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-// import axios from 'axios';
 import { Layout, Alert } from 'antd';
 
 import UserContext from '../context/usercontext';
+
 
 const { Header, Content, Footer } = Layout;
 

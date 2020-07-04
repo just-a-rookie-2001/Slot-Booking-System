@@ -34,7 +34,7 @@ class GlobalState extends React.Component {
 
     login(username, password, rememberMe = false) {
         axios
-            .post('http://localhost:8000/api-token-auth/', {
+            .post('http://localhost:8000/api/user/login', {
                 username: username,
                 password: password,
             })

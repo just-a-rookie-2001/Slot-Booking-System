@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form, Input, Button, Select } from 'antd';
 import { Link } from 'react-router-dom';
+
 import UserContext from '../context/usercontext';
-// import { MailOutlined, LockOutlined } from '@ant-design/icons';
+
 
 const { Option } = Select;
 const layout = {
@@ -24,7 +25,6 @@ class RegisterForm extends React.Component {
     static contextType = UserContext;
 
     onFinish = (values) => {
-        console.log(values);
         this.context.register(values.email, values.name, values.password, values.workplace, values.user_type);
     };
 

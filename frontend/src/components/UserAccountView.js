@@ -1,7 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import UserContext from '../context/usercontext';
 import { Avatar, Row, Descriptions } from 'antd';
+
+import { apiConfig } from "../config/config";
+import UserContext from '../context/usercontext';
+
 
 class UserAccount extends React.Component {
     static contextType = UserContext;
@@ -14,7 +17,7 @@ class UserAccount extends React.Component {
         const config = {
             headers: { Authorization: `Token  ${this.context.token}` },
         };
-        axios.get(`http://localhost:8000/api/user/accountinfo`, config).then((res) => {
+        axios.get(`${apiConfig.baseUrl}user/accountinfo`, config).then((res) => {
             this.setState({ user: res.data }, () => console.log(this.state.user));
         });
     }

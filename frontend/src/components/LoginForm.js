@@ -1,14 +1,15 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
+
 import UserContext from '../context/usercontext';
-import { Link } from 'react-router-dom';
+
 
 class LoginForm extends React.Component {
     static contextType = UserContext;
 
     onFinish = (values) => {
-        console.log('Received values of form: ', values);
         this.context.login(values.email, values.password, values.remember);
     };
 

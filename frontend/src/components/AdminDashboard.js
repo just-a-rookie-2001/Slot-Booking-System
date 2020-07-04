@@ -1,9 +1,12 @@
-import { Col, Row, Card } from 'antd';
+import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import React, { Component } from 'react';
-import UserContext from '../context/usercontext';
+import { Col, Row, Card } from 'antd';
 import { Bar } from 'react-chartjs-2';
+
+import { apiConfig } from "../config/config";
+import UserContext from '../context/usercontext';
+
 
 class AdminDashboard extends Component {
     static contextType = UserContext;
@@ -34,7 +37,7 @@ class AdminDashboard extends Component {
         const config = {
             headers: { Authorization: `Token ${this.context.token}` },
         };
-        axios.get('http://localhost:8000/api/admindashboard', config).then((res) => this.filterData(res.data));
+        axios.get(`${apiConfig.baseUrl}admin/dashboard`, config).then((res) => this.filterData(res.data));
     };
     randomColor = () => {
         const r = Math.round(Math.random() * 255);

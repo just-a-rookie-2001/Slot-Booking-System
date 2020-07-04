@@ -1,7 +1,5 @@
 import React from 'react';
 import { Redirect, Link, withRouter } from 'react-router-dom';
-import UserContext from '../context/usercontext';
-
 import { Layout, Menu, Breadcrumb } from 'antd';
 import {
     CalendarOutlined,
@@ -10,6 +8,9 @@ import {
     LogoutOutlined,
     DatabaseOutlined,
 } from '@ant-design/icons';
+
+import UserContext from '../context/usercontext';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -37,10 +38,6 @@ class AdminPage extends React.Component {
         window.removeEventListener('resize', this.updateWindowDimensions);
     }
 
-    // onCollapse = collapsed => {
-    //     this.setState({ collapsed });
-    // };
-
     toggle = () => {
         setTimeout(() => {
             this.setState({ collapsed: true });
@@ -63,7 +60,6 @@ class AdminPage extends React.Component {
                     collapsible
                     className="sidenav"
                     collapsed={this.state.collapsed}
-                    // onCollapse={this.onCollapse}
                     onMouseEnter={() => this.setState({ collapsed: false })}
                     onMouseLeave={this.toggle}
                     collapsedWidth={window.innerWidth > 460 ? 80 : 0}
@@ -88,7 +84,7 @@ class AdminPage extends React.Component {
                         <Menu.Item key="/admin/history" icon={<ClockCircleOutlined />}>
                             <Link to="/admin/history">Records</Link>
                         </Menu.Item>
-                        <Menu.Item key="5" icon={<LogoutOutlined />} onClick={this.context.logout}>
+                        <Menu.Item key="/logout" icon={<LogoutOutlined />} onClick={this.context.logout}>
                             Logout
                         </Menu.Item>
                     </Menu>

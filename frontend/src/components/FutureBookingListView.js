@@ -4,7 +4,9 @@ import moment from 'moment';
 import { Table, Tooltip } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone, LoadingOutlined } from '@ant-design/icons';
 
+import { apiConfig } from "../config/config";
 import UserContext from '../context/usercontext';
+
 
 class UserFutureBookings extends React.Component {
     static contextType = UserContext;
@@ -69,7 +71,7 @@ class UserFutureBookings extends React.Component {
         const config = {
             headers: { Authorization: `Token ${this.context.token}` },
         };
-        axios.get(`http://localhost:8000/api/filter/userfilter/future`, config).then((res) => {
+        axios.get(`${apiConfig.baseUrl}user/bookings/future`, config).then((res) => {
             for (var i in res.data) {
                 if (res.data[i]['admin_did_accept']) {
                     res.data[i]['admin_did_accept'] = (
@@ -108,9 +110,7 @@ class UserFutureBookings extends React.Component {
                 res.data[i]['start_timing'] = moment(res.data[i]['start_timing'], 'HH:mm:ss').format('HH:mm');
                 res.data[i]['end_timing'] = moment(res.data[i]['end_timing'], 'HH:mm:ss').format('HH:mm');
             }
-            this.setState({ history: res.data }, () => {
-                console.log(this.state.history);
-            });
+            this.setState({ history: res.data });
         });
     }
 

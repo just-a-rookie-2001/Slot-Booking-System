@@ -15,6 +15,8 @@ import {
     Popconfirm,
 } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
+
+import { apiConfig } from '../config/config';
 import UserContext from '../context/usercontext';
 
 const { Meta } = Card;
@@ -35,7 +37,7 @@ class AdminRoom extends React.Component {
         const config = {
             headers: { Authorization: `Token ${this.context.token}` },
         };
-        axios.get('http://localhost:8000/api/rooms/', config).then((res) => {
+        axios.get(`${apiConfig.baseUrl}admin/rooms`, config).then((res) => {
             res.data.sort((a, b) => {
                 a = a.school.toLowerCase();
                 b = b.school.toLowerCase();
@@ -51,7 +53,7 @@ class AdminRoom extends React.Component {
         };
         axios
             .post(
-                'http://localhost:8000/api/rooms/',
+                `${apiConfig.baseUrl}admin/rooms`,
                 {
                     room_number: values['Room Number'],
                     room_name: values['Room Name'],
@@ -81,7 +83,10 @@ class AdminRoom extends React.Component {
     };
 
     handleDelete = (data) => {
-        axios.delete(`http://localhost:8000/api/rooms/${data.id}/`).then((_res) => this.fetchData());
+        const config = {
+            headers: { Authorization: `Token ${this.context.token}` },
+        };
+        axios.delete(`${apiConfig.baseUrl}admin/rooms/${data.id}`, config).then((_res) => this.fetchData());
     };
 
     renderRooms = () => {
@@ -96,7 +101,7 @@ class AdminRoom extends React.Component {
             return (
                 <React.Fragment key={key}>
                     {divider}
-                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} >
+                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6}>
                         <Card
                             cover={this.coverPhoto(item.school)}
                             actions={[

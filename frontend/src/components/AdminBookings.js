@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import { Card, Button, Row, Col, Empty, Modal, Input, Table, Divider } from 'antd';
+
+import { apiConfig } from "../config/config";
 import UserContext from '../context/usercontext';
 
 class AdminBooking extends React.Component {
@@ -92,7 +94,7 @@ class AdminBooking extends React.Component {
         const config = {
             headers: { Authorization: `Token ${this.context.token}` },
         };
-        axios.get('http://127.0.0.1:8000/api/filter/adminfilter/pending', config).then((res) => {
+        axios.get(`${apiConfig.baseUrl}admin/pending`, config).then((res) => {
             res.data.sort((a, b) => {
                 if (a.booking_date === b.booking_date) {
                     return moment(a['start_timing'], 'HH:mm:ss').diff(moment(b['end_timing'], 'HH:mm:ss'));
@@ -114,7 +116,7 @@ class AdminBooking extends React.Component {
         };
         axios
             .post(
-                `http://127.0.0.1:8000/api/filter/adminfilter/pending`,
+                `${apiConfig.baseUrl}admin/pending`,
                 {
                     id: this.state.id,
                     admin_did_accept: this.state.accept,

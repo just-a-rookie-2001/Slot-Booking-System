@@ -1,9 +1,12 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { Card, Avatar, Row, Col, DatePicker, Badge, Divider, Select } from 'antd';
 import { Link } from 'react-router-dom';
+import { Card, Avatar, Row, Col, DatePicker, Badge, Divider, Select } from 'antd';
+
 import UserContext from '../context/usercontext';
+import { apiConfig } from "../config/config";
+
 
 const { Meta } = Card;
 
@@ -25,7 +28,7 @@ class RoomList extends React.Component {
         const config = {
             headers: { Authorization: `Token ${this.context.token}` },
         };
-        axios.get('http://127.0.0.1:8000/api/filter/roomlist/', config).then((res) => {
+        axios.get(`${apiConfig.baseUrl}room/all`, config).then((res) => {
             res.data.sort((a, b) => {
                 a = a.school.toLowerCase();
                 b = b.school.toLowerCase();
@@ -44,7 +47,7 @@ class RoomList extends React.Component {
         };
         axios
             .post(
-                'http://127.0.0.1:8000/api/filter/roomlist/',
+                `${apiConfig.baseUrl}room/all`,
                 {
                     date: this.state.date,
                     start: start,
@@ -52,11 +55,7 @@ class RoomList extends React.Component {
                 },
                 config
             )
-            .then((res) =>
-                this.setState({ filterData: res.data }, () => {
-                    console.log(this.state.filterData);
-                })
-            );
+            .then((res) => this.setState({ filterData: res.data }));
     };
 
     renderRooms = () => {
@@ -226,13 +225,13 @@ class RoomList extends React.Component {
                             size="large"
                             allowClear={false}
                             disabledDate={(current) => {
-                                return current <= moment().subtract(1, 'day');
+                                return current < moment().startOf('day');
                             }}
                         />
                     </Col>
                     <Col className="gutter-row" span={{ xs: 24, sm: 12, md: 8, lg: 6 }}>
                         <Select
-                            style={{ width: 180 }}
+                            style={{ width: 160 }}
                             size="large"
                             onChange={(values) => {
                                 if (values !== null) {

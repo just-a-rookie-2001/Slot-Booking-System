@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Table, Tooltip, Calendar, Row, Col, Modal, Radio } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone, LoadingOutlined } from '@ant-design/icons';
 
+import { apiConfig } from "../config/config";
 import UserContext from '../context/usercontext';
 
 class BookingHistory extends React.Component {
@@ -93,7 +94,7 @@ class BookingHistory extends React.Component {
         const config = {
             headers: { Authorization: `Token ${this.context.token}` },
         };
-        axios.get(`http://localhost:8000/api/allbookings`, config).then((res) => {
+        axios.get(`${apiConfig.baseUrl}admin/bookings`, config).then((res) => {
             for (var i in res.data) {
                 if (res.data[i]['admin_did_accept']) {
                     res.data[i]['admin_did_accept'] = (

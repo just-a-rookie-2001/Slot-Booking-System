@@ -1,9 +1,12 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import axios from 'axios';
-import { Alert, DatePicker, Card, Row, Col, Button, Tooltip, Modal, Input } from 'antd';
 import moment from 'moment';
+import { withRouter } from 'react-router-dom';
+import { Alert, DatePicker, Card, Row, Col, Button, Tooltip, Modal, Input } from 'antd';
+
+import { apiConfig } from "../config/config";
 import UserContext from '../context/usercontext';
+
 
 class RoomDetail extends React.Component {
     static contextType = UserContext;
@@ -28,11 +31,10 @@ class RoomDetail extends React.Component {
             headers: { Authorization: `Token ${this.context.token}` },
         };
         const roomID = this.props.match.params.roomID;
-        console.log(this.props);
         const date = this.state.date;
         axios
             .post(
-                `http://127.0.0.1:8000/api/filter/roomfilter/`,
+                `${apiConfig.baseUrl}room/detail`,
                 {
                     date: date,
                     id: roomID,
@@ -52,7 +54,7 @@ class RoomDetail extends React.Component {
             };
             axios
                 .post(
-                    `http://127.0.0.1:8000/api/filter/roomfilter/`,
+                    `${apiConfig.baseUrl}room/detail`,
                     {
                         date: dateString,
                         id: roomID,
@@ -65,7 +67,7 @@ class RoomDetail extends React.Component {
         }
     };
 
-    handleButtonClick(event, data) {
+    handleButtonClick(event, _data) {
         event.preventDefault();
         const roomID = this.props.match.params.roomID;
         const config = {
@@ -73,7 +75,7 @@ class RoomDetail extends React.Component {
         };
         axios
             .post(
-                `http://127.0.0.1:8000/api/book/`,
+                `${apiConfig.baseUrl}api/book/`,
                 {
                     email: this.context.email,
                     date: this.state.date,
@@ -88,7 +90,7 @@ class RoomDetail extends React.Component {
                 this.setState({ modalVisible: false });
                 axios
                     .post(
-                        `http://127.0.0.1:8000/api/filter/roomfilter/`,
+                        `${apiConfig.baseUrl}room/detail`,
                         {
                             date: this.state.date,
                             id: roomID,
@@ -154,6 +156,23 @@ class RoomDetail extends React.Component {
         }
     };
 
+    renderSlots = () => {
+        if (this.state.slots !== null) {
+            return this.state.slots.map((value, index) => {
+                if (moment(this.state.date + 'T' + value.start_timing) < moment().add(15, 'minutes')) return null;
+                return (
+                    <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={index}>
+                        <Card size="large" title={'Slot ' + (index + 1)} hoverable>
+                            <p>From: {moment(value['start_timing'], 'HH:mm:ss').format('HH:mm')}</p>
+                            <p>To: {moment(value['end_timing'], 'HH:mm:ss').format('HH:mm')}</p>
+                            <p>{this.renderButton(value)}</p>
+                        </Card>
+                    </Col>
+                );
+            });
+        }
+    };
+
     render() {
         return (
             <div>
@@ -179,7 +198,7 @@ class RoomDetail extends React.Component {
                             size="large"
                             allowClear={false}
                             disabledDate={(current) => {
-                                return current <= moment().subtract(1,'day');
+                                return current < moment().startOf('day');
                             }}
                         />
                     </Col>
@@ -191,16 +210,7 @@ class RoomDetail extends React.Component {
                         marginTop: '20px',
                     }}
                 >
-                    {this.state.slots !== null &&
-                        this.state.slots.map((value, index) => (
-                            <Col className="gutter-row" xs={24} sm={12} md={8} lg={6} key={index}>
-                                <Card size="large" title={'Slot ' + (index + 1)} hoverable>
-                                    <p>From: {moment(value['start_timing'], 'HH:mm:ss').format('HH:mm')}</p>
-                                    <p>To: {moment(value['end_timing'], 'HH:mm:ss').format('HH:mm')}</p>
-                                    <p>{this.renderButton(value)}</p>
-                                </Card>
-                            </Col>
-                        ))}
+                    {this.renderSlots()}
                     <Modal
                         title="Please state your Purpose of Booking"
                         centered

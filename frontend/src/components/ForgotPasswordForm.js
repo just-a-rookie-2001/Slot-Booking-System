@@ -1,8 +1,11 @@
 import React from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button, Result, Alert, Spin } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+
+import { apiConfig } from "../config/config";
+
 
 class ForgotPasswordForm extends React.Component {
     state = {
@@ -17,7 +20,7 @@ class ForgotPasswordForm extends React.Component {
     onEmailSubmit = (values) => {
         this.setState({ loading: true });
         axios
-            .post('http://localhost:8000/api/user/forgotpassword', {
+            .post(`${apiConfig.baseUrl}user/forgotpassword`, {
                 email: values.email,
             })
             .then((_res) => {
@@ -36,7 +39,7 @@ class ForgotPasswordForm extends React.Component {
     onTokenSubmit = (values) => {
         this.setState({ loading: true });
         axios
-            .post('http://localhost:8000/api/user/verifytoken', {
+            .post(`${apiConfig.baseUrl}user/verifytoken`, {
                 token: values.token,
                 email: this.state.email,
             })
@@ -55,7 +58,7 @@ class ForgotPasswordForm extends React.Component {
     onPasswordSubmit = (values) => {
         this.setState({ loading: true });
         axios
-            .post('http://localhost:8000/api/user/changepassword', {
+            .post(`${apiConfig.baseUrl}user/changepassword`, {
                 email: this.state.email,
                 password: values.password,
             })

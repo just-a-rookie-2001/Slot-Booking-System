@@ -182,10 +182,9 @@ class UserPastBookingsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # currTime = datetime.datetime.now()
-        # filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
+        slot = Booking.objects.filter(user=request.user, booking_date__lte=datetime.date.today())
         res = []
-        for item in Booking.objects.filter(user__exact=request.user, booking_date__lte=datetime.date.today(), end_timing__lt=datetime.datetime.now().time()):
+        for item in slot.filter(booking_date__lt=datetime.date.today()).union(slot.filter(booking_date__exact=datetime.date.today(), end_timing__lt=datetime.datetime.now().time())):
             x = {"booking_date": item.booking_date,
                  "start_timing": item.start_timing,
                  "end_timing": item.end_timing,
@@ -205,9 +204,6 @@ class UserFutureBookingsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # currTime = datetime.datetime.now()
-        # filterTime = int((currTime.hour + (currTime.minute / 60) - 7.5) * 2)
-        # userId = get_user_model().objects.get(email=request.user).id
         slot = Booking.objects.filter(user=request.user, booking_date__gte=datetime.date.today())
         res = []
         for item in slot.filter(booking_date__gt=datetime.date.today()).union(slot.filter(booking_date__exact=datetime.date.today(), end_timing__gte=datetime.datetime.now().time())):
@@ -327,36 +323,50 @@ class BookingHistory(APIView):
         return Response(res, status=status.HTTP_200_OK)
 
 
-class AutoActionView(APIView):
-    def get(self, request):
-        try:
-            x = datetime.datetime.now()
-            rounded = (x - (x - datetime.datetime.min) %
-                       datetime.timedelta(minutes=30)).strftime("%H:%M")
-            for room in Room.objects.all():
-                booking = Booking.objects.filter(
-                    is_pending=True, booking_date=datetime.date.today(), Room=room)
-                # Handle empty slots
-                if not booking.exists():
-                    print("no data to take action upon")
-                else:
-                    slots = booking.filter(start_timing=rounded)
-                    if not slots.exists():
-                        print("This slot doesn't have any pending requests")
-                    else:
-                        y = min(slots.values_list('created_at', flat=True))
-                        accept = slots.get(created_at=y)
-                        accept.admin_did_accept = True
-                        accept.is_pending = False
-                        accept.admin_feedback = "Accepted on first come first server basis"
-                        accept.save()
-                        reject = slots.exclude(id=accept.id)
-                        feedback = "Declined on first come first serve basis"
-                        reject.update(admin_did_accept=False,
-                                      is_pending=False, admin_feedback=feedback)
-                        print("Successfully ran the jobs")
-            return Response(" ")
-        except Exception as e:
-            print("Some error occured: "+str(e))
-            return Response(" ")
-            
+class AdminRoomsListCreateView(generics.ListCreateAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+    permission_classes = [IsAdminUser]
+
+
+class AdminRoomsDeleteView(generics.DestroyAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+    permission_classes = [IsAdminUser]
+
+
+# class AutoActionView(APIView):
+#     '''
+#         use this view for testing cron job. Disable after test
+#     '''
+#     def get(self, request):
+#         try:
+#             x = datetime.datetime.now()
+#             rounded = (x - (x - datetime.datetime.min) %
+#                        datetime.timedelta(minutes=30)).strftime("%H:%M")
+#             for room in Room.objects.all():
+#                 booking = Booking.objects.filter(
+#                     is_pending=True, booking_date=datetime.date.today(), Room=room)
+#                 # Handle empty slots
+#                 if not booking.exists():
+#                     print("no data to take action upon")
+#                 else:
+#                     slots = booking.filter(start_timing=rounded)
+#                     if not slots.exists():
+#                         print("This slot doesn't have any pending requests")
+#                     else:
+#                         y = min(slots.values_list('created_at', flat=True))
+#                         accept = slots.get(created_at=y)
+#                         accept.admin_did_accept = True
+#                         accept.is_pending = False
+#                         accept.admin_feedback = "Accepted on first come first server basis"
+#                         accept.save()
+#                         reject = slots.exclude(id=accept.id)
+#                         feedback = "Declined on first come first serve basis"
+#                         reject.update(admin_did_accept=False,
+#                                       is_pending=False, admin_feedback=feedback)
+#                         print("Successfully ran the jobs")
+#             return Response(" ")
+#         except Exception as e:
+#             print("Some error occured: "+str(e))
+#             return Response(" ")
