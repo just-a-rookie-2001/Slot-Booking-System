@@ -5,7 +5,6 @@ import { CalendarOutlined, ClockCircleOutlined, HomeOutlined, LogoutOutlined, Us
 
 import UserContext from '../context/usercontext';
 
-
 const { Header, Content, Footer, Sider } = Layout;
 
 class HomePage extends React.Component {
@@ -97,8 +96,23 @@ class HomePage extends React.Component {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        Created by Jaimik Patel and Moksh Doshi as a part of Website Making Challenge 2020, Programming
-                        Club
+                        Created by{' '}
+                        <a
+                            href="https://www.linkedin.com/in/jaimik-patel-0690841b2/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Jaimik Patel
+                        </a>{' '}
+                        and{' '}
+                        <a
+                            href="https://www.linkedin.com/in/moksh-doshi-a4a0821b2/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Moksh Doshi
+                        </a>{' '}
+                        as a part of Website Making Challenge 2020, Programming Club
                     </Footer>
                 </Layout>
             </Layout>

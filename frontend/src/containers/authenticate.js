@@ -4,7 +4,6 @@ import { Layout, Alert } from 'antd';
 
 import UserContext from '../context/usercontext';
 
-
 const { Header, Content, Footer } = Layout;
 
 class AuthLayout extends React.Component {
@@ -42,8 +41,23 @@ class AuthLayout extends React.Component {
                         <div className="site-layout-content">{this.props.children}</div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        Created by Jaimik Patel and Moksh Doshi as a part of Website Making Challenge 2020, Programming
-                        Club
+                        Created by{' '}
+                        <a
+                            href="https://www.linkedin.com/in/jaimik-patel-0690841b2/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Jaimik Patel
+                        </a>{' '}
+                        and{' '}
+                        <a
+                            href="https://www.linkedin.com/in/moksh-doshi-a4a0821b2/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Moksh Doshi
+                        </a>{' '}
+                        as a part of Website Making Challenge 2020, Programming Club
                     </Footer>
                 </Layout>
             </div>

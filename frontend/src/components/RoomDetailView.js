@@ -75,7 +75,7 @@ class RoomDetail extends React.Component {
         };
         axios
             .post(
-                `${apiConfig.baseUrl}api/book/`,
+                `${apiConfig.baseUrl}book/`,
                 {
                     email: this.context.email,
                     date: this.state.date,
