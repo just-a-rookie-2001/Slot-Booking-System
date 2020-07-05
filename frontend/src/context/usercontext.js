@@ -7,7 +7,7 @@ export default React.createContext({
     email: null,
     isAuthenticated: false,
     isAdmin: false,
-    login: () => { },
-    logout: () => { },
-    register: () => { },
-})
+    login: () => {},
+    logout: () => {},
+    register: () => {},
+});

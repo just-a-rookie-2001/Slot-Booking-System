@@ -30,13 +30,13 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 
-class IsAdmin(views.APIView):
-    def get(self, request, email):
-        try:
-            res = get_user_model().objects.get(email=email).admin
-            return Response({"admin": res})
-        except:
-            return Response({"message": "Invalid/bad request"})
+# class IsAdmin(views.APIView):
+#     def get(self, request, email):
+#         try:
+#             res = get_user_model().objects.get(email=email).admin
+#             return Response({"admin": res})
+#         except:
+#             return Response({"message": "Invalid/bad request"})
 
 
 class UserRegisterView(views.APIView):

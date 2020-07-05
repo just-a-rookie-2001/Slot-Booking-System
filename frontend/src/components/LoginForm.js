@@ -1,15 +1,16 @@
-import React from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
+
 import UserContext from '../context/usercontext';
-import { Link } from "react-router-dom";
+
 
 class LoginForm extends React.Component {
     static contextType = UserContext;
 
-    onFinish = values => {
-        console.log('Received values of form: ', values);
-        this.context.login(values.email, values.password, values.remember)
+    onFinish = (values) => {
+        this.context.login(values.email, values.password, values.remember);
     };
 
     render() {
@@ -25,23 +26,29 @@ class LoginForm extends React.Component {
                     rules={[
                         {
                             type: 'pattern',
-                            pattern: new RegExp("[a-z0-9._%+-]+@ahduni.edu.in"),
-                            message: "Please enter an Ahmedabad University Mail"
+                            pattern: new RegExp('[a-z0-9._%+-]+@ahduni.edu.in'),
+                            message: 'Please enter an Ahmedabad University Mail',
                         },
                         {
                             required: true,
-                            message: 'Please input your Email'
-                        }
+                            message: 'Please input your Email',
+                        },
                     ]}
                 >
                     <Input
-                        prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-Mail"
-                        type='email'
+                        prefix={<MailOutlined className="site-form-item-icon" />}
+                        placeholder="E-Mail"
+                        type="email"
                     />
                 </Form.Item>
                 <Form.Item
                     name="password"
-                    rules={[{ required: true, message: 'Please input your Password!' }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Password!',
+                        },
+                    ]}
                 >
                     <Input
                         prefix={<LockOutlined className="site-form-item-icon" />}
@@ -61,11 +68,8 @@ class LoginForm extends React.Component {
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         Log in
                     </Button>
-                    <Button type="secondary" className="login-form-button"
-                        style={{ marginLeft: '10px' }}>
-                        <Link to="/register">
-                            Register
-                        </Link>
+                    <Button type="secondary" className="login-form-button" style={{ marginLeft: '10px' }}>
+                        <Link to="/register">Register</Link>
                     </Button>
                 </Form.Item>
             </Form>
@@ -73,4 +77,4 @@ class LoginForm extends React.Component {
     }
 }
 
-export default LoginForm
+export default LoginForm;

@@ -28,23 +28,26 @@ router.register('api/bookings', BookingsView)
 router.register('api/users', UserView)
 
 urlpatterns = [
-    path('api-token-auth/', CustomAuthToken.as_view()),  #login (post)
+    path("api/user/login", CustomAuthToken.as_view()),  #login (post)
     path("api/user/register", UserRegisterView.as_view()), #register (post)
     path("api/user/forgotpassword", ForgotPasswordView.as_view()), #generate token (post)
     path("api/user/verifytoken", VerifyResetToken.as_view()),  #verify token (post)
     path("api/user/changepassword", ChangePassword.as_view()),  #reset password (post)
-
     path("api/user/accountinfo", UserAccountInfo.as_view()),
-    path("api/filter/adminfilter/checkadmin/<email>", IsAdmin.as_view()),
-    path("api/filter/adminfilter/pending", AdminRequestActionView.as_view()),
-    # path("api/filter/adminfilter/autoaction", AutoActionView.as_view()),
-    path("api/filter/userfilter/past", UserPastBookingsView.as_view()),
-    path("api/filter/userfilter/future", UserFutureBookingsView.as_view()),
-    path("api/filter/roomlist/", RoomListView.as_view()),
-    path("api/filter/roomfilter/", RoomDetailView.as_view()),
-    path("api/allbookings", BookingHistory.as_view()),
+    path("api/user/bookings/past", UserPastBookingsView.as_view()),
+    path("api/user/bookings/future", UserFutureBookingsView.as_view()),
+
+    # path("api/filter/adminfilter/autoaction", AutoActionView.as_view()), #cron job testing
+    path("api/room/all", RoomListView.as_view()),
+    path("api/room/detail", RoomDetailView.as_view()),
     path("api/book/", BookRoomSlotView.as_view()),
-    path("api/admindashboard", AdminDashboardStats.as_view()),
-    path('', include(router.urls)),
+
+    path("api/admin/dashboard", AdminDashboardStats.as_view()),
+    path("api/admin/pending", AdminRequestActionView.as_view()),
+    path("api/admin/bookings", BookingHistory.as_view()),
+    path("api/admin/rooms", AdminRoomsListCreateView.as_view()),
+    path("api/admin/rooms/<pk>", AdminRoomsDeleteView.as_view()),
+
+    # path('', include(router.urls)), #only for testing (browsable api)
     path('admin/', admin.site.urls),
 ]

@@ -1,68 +1,109 @@
-import React from "react";
-import axios from "axios";
+import React from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button, Result, Alert, Spin } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { Link } from "react-router-dom";
+
+import { apiConfig } from "../config/config";
+
 
 class ForgotPasswordForm extends React.Component {
-
     state = {
-        email: null, emailSent: false,
-        verifyToken: false, passwordSubmit: false,
-        error: false, loading: false
-    }
-    errorMsg = null
-    onEmailSubmit = values => {
-        this.setState({ loading: true })
-        axios.post("http://localhost:8000/api/user/forgotpassword", {
-            "email": values.email
-        }).then(_res => {
-            this.setState({ loading: false, error: false, emailSent: true, email: values.email })
-        }).catch(err => {
-            console.log(err);
-            this.setState({ loading: false, error: true })
-        })
+        email: null,
+        emailSent: false,
+        verifyToken: false,
+        passwordSubmit: false,
+        error: false,
+        loading: false,
     };
-    onTokenSubmit = values => {
-        this.setState({ loading: true })
-        axios.post("http://localhost:8000/api/user/verifytoken", {
-            "token": values.token,
-            "email": this.state.email
-        }).then(_res => {
-            this.setState({ loading: false, error: false, verifyToken: true })
-        }).catch(err => {
-            console.log(err);
-            this.setState({ loading: false, error: true })
-        })
-    }
-    onPasswordSubmit = values => {
-        this.setState({ loading: true })
-        axios.post("http://localhost:8000/api/user/changepassword", {
-            "email": this.state.email,
-            "password": values.password
-        }).then(_res => {
-            this.setState({ loading: false, error: false, passwordSubmit: true })
-        }).catch(err => {
-            console.log(err);
-            this.setState({ loading: false, error: true })
-        })
-    }
+    errorMsg = null;
+    onEmailSubmit = (values) => {
+        this.setState({ loading: true });
+        axios
+            .post(`${apiConfig.baseUrl}user/forgotpassword`, {
+                email: values.email,
+            })
+            .then((_res) => {
+                this.setState({
+                    loading: false,
+                    error: false,
+                    emailSent: true,
+                    email: values.email,
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                this.setState({ loading: false, error: true });
+            });
+    };
+    onTokenSubmit = (values) => {
+        this.setState({ loading: true });
+        axios
+            .post(`${apiConfig.baseUrl}user/verifytoken`, {
+                token: values.token,
+                email: this.state.email,
+            })
+            .then((_res) => {
+                this.setState({
+                    loading: false,
+                    error: false,
+                    verifyToken: true,
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                this.setState({ loading: false, error: true });
+            });
+    };
+    onPasswordSubmit = (values) => {
+        this.setState({ loading: true });
+        axios
+            .post(`${apiConfig.baseUrl}user/changepassword`, {
+                email: this.state.email,
+                password: values.password,
+            })
+            .then((_res) => {
+                this.setState({
+                    loading: false,
+                    error: false,
+                    passwordSubmit: true,
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+                this.setState({ loading: false, error: true });
+            });
+    };
 
     render() {
         if (this.state.loading) {
-            return <Spin size="large" />
+            return <Spin size="large" />;
         }
         if (this.state.error) {
-            this.errorMsg = <Alert message="Error" description="Some error occured" type="error" showIcon style={{ marginBottom: 20 }} />
+            this.errorMsg = (
+                <Alert
+                    message="Error"
+                    description="Some error occured"
+                    type="error"
+                    showIcon
+                    style={{ marginBottom: 20 }}
+                />
+            );
         } else {
-            this.errorMsg = null
+            this.errorMsg = null;
         }
         if (this.state.passwordSubmit) {
-            return <Result
-                status="success"
-                title="Successfully Changed Password!"
-                extra={[<Button type="primary" key="console"><Link to="/login">Login</Link></Button>]}
-            />
+            return (
+                <Result
+                    status="success"
+                    title="Successfully Changed Password!"
+                    extra={[
+                        <Button type="primary" key="console">
+                            <Link to="/login">Login</Link>
+                        </Button>,
+                    ]}
+                />
+            );
         }
         if (this.state.verifyToken) {
             return (
@@ -77,7 +118,12 @@ class ForgotPasswordForm extends React.Component {
                         <Form.Item
                             label="Password"
                             name="password"
-                            rules={[{ required: true, message: 'Please enter your new password' }]}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please enter your new password',
+                                },
+                            ]}
                         >
                             <Input.Password placeholder="New Password" />
                         </Form.Item>
@@ -106,7 +152,7 @@ class ForgotPasswordForm extends React.Component {
                         <Form.Item>
                             <Button type="primary" htmlType="submit" className="login-form-button">
                                 Submit
-                    </Button>
+                            </Button>
                         </Form.Item>
                     </Form>
                 </div>
@@ -124,14 +170,19 @@ class ForgotPasswordForm extends React.Component {
                     >
                         <Form.Item
                             name="token"
-                            rules={[{ required: true, message: 'Please enter the token sent to your email' }]}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please enter the token sent to your email',
+                                },
+                            ]}
                         >
                             <Input prefix={<LockOutlined className="site-form-item-icon" />} placeholder="Token" />
                         </Form.Item>
                         <Form.Item>
                             <Button type="primary" htmlType="submit" className="login-form-button">
                                 Submit
-                    </Button>
+                            </Button>
                         </Form.Item>
                     </Form>
                 </div>
@@ -151,24 +202,25 @@ class ForgotPasswordForm extends React.Component {
                         rules={[
                             {
                                 type: 'pattern',
-                                pattern: new RegExp("[a-z0-9._%+-]+@ahduni.edu.in"),
-                                message: "Please enter an Ahmedabad University Mail"
+                                pattern: new RegExp('[a-z0-9._%+-]+@ahduni.edu.in'),
+                                message: 'Please enter an Ahmedabad University Mail',
                             },
                             {
                                 required: true,
-                                message: 'Please input your Email'
+                                message: 'Please input your Email',
                             },
                         ]}
                     >
                         <Input
-                            prefix={<MailOutlined className="site-form-item-icon" />} placeholder="E-Mail"
-                            type='email'
+                            prefix={<MailOutlined className="site-form-item-icon" />}
+                            placeholder="E-Mail"
+                            type="email"
                         />
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button">
                             Submit
-                    </Button>
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>
@@ -176,4 +228,4 @@ class ForgotPasswordForm extends React.Component {
     }
 }
 
-export default ForgotPasswordForm
+export default ForgotPasswordForm;
